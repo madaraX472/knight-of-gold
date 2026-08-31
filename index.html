@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Reward WebApp</title>
+    <title>Knight of Gold</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -13,33 +13,65 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            background-color: #0b0e14;
+            background: #0b0e14;
             color: #ffffff;
             min-height: 100vh;
-            padding-bottom: 90px;
+            padding-bottom: 85px;
+            direction: ltr;
         }
 
         .container {
-            padding: 15px;
-            max-width: 480px;
+            padding: 16px;
+            max-width: 440px;
             margin: 0 auto;
         }
 
-        /* Tabs logic */
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        /* Top Header Stat Bars */
+        .top-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-        /* Card styles */
-        .card {
-            background: #151c28;
-            border: 1px solid #222e3e;
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .stat-pill {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #ffd700;
+            padding: 6px 12px;
             border-radius: 16px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Card Component */
+        .card {
+            background: #141a24;
+            border: 1px solid #222c3c;
+            border-radius: 18px;
             padding: 16px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .task-card {
@@ -48,149 +80,175 @@
             justify-content: space-between;
         }
 
-        .task-info {
+        .task-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        .adsgram-icon {
-            width: 45px;
-            height: 45px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #0088cc, #005588);
+        .adsgram-logo {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
+            font-weight: 900;
+            font-size: 20px;
             color: #fff;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
         }
 
-        .btn-blue {
-            background: #0088cc;
-            color: #fff;
-            border: none;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
+        .ticket-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 215, 0, 0.15);
+            color: #ffd700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-top: 4px;
         }
+
+        /* Golden Glowing Button */
+        .gold-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 22px;
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+
+        .gold-btn:active {
+            transform: scale(0.94);
+            box-shadow: 0 0 22px #ffd700, 0 0 35px #f59e0b; /* Yellow Glow Effect */
+        }
+
+        /* Tabs Logic */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
         /* Leaderboard UI */
-        .podium {
+        .podium-container {
             display: flex;
             justify-content: center;
             align-items: flex-end;
             gap: 10px;
-            margin: 20px 0;
+            margin: 25px 0 15px 0;
         }
 
-        .podium-item {
-            background: #151c28;
-            border: 1px solid #222e3e;
-            border-radius: 12px;
-            padding: 10px;
+        .podium-box {
+            background: #141a24;
+            border: 1px solid #222c3c;
+            border-radius: 16px;
+            padding: 12px 8px;
             text-align: center;
             width: 30%;
         }
 
-        .podium-item.first { border-color: #ffd700; transform: scale(1.05); }
+        .podium-box.rank-1 {
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+            transform: translateY(-8px);
+        }
 
-        .avatar {
-            width: 50px;
-            height: 50px;
+        .avatar-circle {
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: #222e3e;
+            background: #222c3c;
             margin: 0 auto 8px auto;
             background-size: cover;
             background-position: center;
+            border: 2px solid #334155;
         }
 
-        .limit-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px 8px;
-            border-radius: 8px;
-            font-size: 11px;
-            color: #aaa;
+        .podium-box.rank-1 .avatar-circle {
+            border-color: #ffd700;
         }
 
-        /* Profile & Withdrawal */
-        .profile-header {
+        /* Profile Section */
+        .profile-head {
             text-align: center;
             margin-bottom: 20px;
         }
 
-        .profile-avatar {
+        .profile-pic {
             width: 80px;
             height: 80px;
             border-radius: 50%;
             margin: 0 auto 10px auto;
-            border: 2px solid #0088cc;
+            border: 2px solid #f59e0b;
             background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
         }
 
-        .input-box {
+        .styled-input {
             width: 100%;
             padding: 12px;
             background: #0b0e14;
-            border: 1px solid #222e3e;
-            border-radius: 10px;
+            border: 1px solid #222c3c;
+            border-radius: 12px;
             color: #fff;
-            margin-top: 8px;
-            margin-bottom: 12px;
+            margin: 8px 0 14px 0;
+            font-size: 13px;
         }
 
-        /* Floating Bottom Navigation */
+        .styled-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Clean Golden Navigation Bar */
         .bottom-nav {
             position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 92%;
-            max-width: 440px;
-            background: rgba(21, 28, 40, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid #222e3e;
-            border-radius: 35px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 65px;
+            background: #10141d;
+            border-top: 1px solid #1e2638;
             display: flex;
             justify-content: space-around;
-            padding: 8px 5px;
-            z-index: 1000;
+            align-items: center;
+            z-index: 999;
         }
 
-        .nav-item {
+        .nav-link {
+            background: none;
+            border: none;
+            color: #64748b;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #7a8b9e;
-            background: none;
-            border: none;
+            gap: 4px;
             font-size: 11px;
-            width: 20%;
+            font-weight: 700;
             cursor: pointer;
+            width: 25%;
+            transition: all 0.2s;
         }
 
-        .nav-item i {
+        .nav-link i {
             font-size: 18px;
-            margin-bottom: 3px;
         }
 
-        .nav-item.active {
-            color: #0088cc;
+        .nav-link:active {
+            color: #ffd700;
+            text-shadow: 0 0 12px #ffd700; /* Click Glow */
         }
 
-        .center-btn {
-            background: #1e293b;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            margin-top: -15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #0088cc;
-            color: #0088cc;
+        .nav-link.active {
+            color: #f59e0b;
         }
     </style>
 </head>
@@ -198,111 +256,126 @@
 
     <div class="container">
         
-        <!-- Tab 1: Tasks / Ads -->
-        <div id="tasksTab" class="tab-content active">
-            <h3 style="margin-bottom: 15px;">شبكات الإعلانات</h3>
+        <!-- Top Balance Summary -->
+        <div class="top-stats">
+            <div class="user-badge">
+                <i class="fa-solid fa-crown" style="color: #ffd700;"></i>
+                <span id="headerName">Player</span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+                <div class="stat-pill">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    <span id="usdtBalance">0.0000</span>
+                </div>
+                <div class="stat-pill">
+                    <i class="fa-solid fa-ticket"></i>
+                    <span id="ticketsBalance">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 1: EARN (ADS) -->
+        <div id="earnTab" class="tab-content active">
+            <h3 style="margin-bottom: 12px; font-size: 16px; color: #f1f5f9;">Ad Networks</h3>
+            
             <div class="card task-card">
-                <div class="task-info">
-                    <div class="adsgram-icon">A</div>
+                <div class="task-left">
+                    <div class="adsgram-logo">A</div>
                     <div>
-                        <div style="font-weight: bold;">Adsgram</div>
-                        <div style="font-size: 12px; color: #4ba3e3;">مشاهدة الإعلان</div>
-                        <div style="font-size: 11px; color: #aaa;">+$0.0003 | +100 تذكرة</div>
+                        <div style="font-weight: 800; font-size: 14px;">Adsgram</div>
+                        <div style="font-size: 12px; color: #94a3b8;">Watch Video Ad</div>
+                        <div class="ticket-badge">
+                            <i class="fa-solid fa-ticket"></i> +100 Tickets | +$0.0003
+                        </div>
                     </div>
                 </div>
-                <button class="btn-blue" onclick="showAdsgramAd()">مشاهدة</button>
+                <button class="gold-btn" onclick="watchAdsgramAd()">Watch</button>
             </div>
-            <div style="text-align: center; margin-top: 10px;">
-                <span class="limit-badge">حد المشاركة في المسابقة: <span id="adCount">0</span> / 15</span>
+
+            <div class="card" style="text-align: center; background: rgba(20, 26, 36, 0.6);">
+                <span style="font-size: 12px; color: #94a3b8;">Tournament Ad Limit: </span>
+                <span style="font-size: 13px; font-weight: 800; color: #ffd700;" id="limitCounter">0 / 15</span>
             </div>
         </div>
 
-        <!-- Tab 2: Referral -->
+        <!-- TAB 2: FRIENDS / REFERRAL -->
         <div id="friendsTab" class="tab-content">
-            <div class="card" style="text-align: center;">
-                <h3>دعوة الأصدقاء</h3>
-                <p style="font-size: 13px; color: #aaa; margin: 10px 0;">احصل على تذاكر إضافية عند دعوة أصدقائك لاستخدام التطبيق.</p>
-                <input type="text" id="refLink" class="input-box" readonly value="جاري التحميل...">
-                <button class="btn-blue" style="width: 100%;" onclick="copyRef()">نسخ رابط الدعوة</button>
+            <div class="card" style="text-align: center; padding: 22px 16px;">
+                <i class="fa-solid fa-users" style="font-size: 36px; color: #f59e0b; margin-bottom: 12px;"></i>
+                <h3 style="margin-bottom: 6px;">Invite Friends</h3>
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">Earn extra competition tickets for every invited friend!</p>
+                <input type="text" id="refUrl" class="styled-input" readonly value="Loading link...">
+                <button class="gold-btn" style="width: 100%;" onclick="copyInviteUrl()">Copy Invite Link</button>
             </div>
         </div>
 
-        <!-- Tab 3: Contest / Main -->
-        <div id="mainTab" class="tab-content">
-            <div class="card" style="text-align: center;">
-                <h2>المسابقة الحالية</h2>
-                <p style="color: #aaa; margin-top: 5px;">شاهد الإعلانات لتجميع التذاكر ودخول السحب.</p>
-                <div style="font-size: 24px; font-weight: bold; color: #0088cc; margin: 15px 0;">
-                    التذاكر: <span id="ticketCount">0</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tab 4: Leaderboard -->
+        <!-- TAB 3: LEADERBOARD -->
         <div id="leaderboardTab" class="tab-content">
-            <h3 style="text-align: center;">لوحة التصنيف</h3>
-            <div class="podium">
-                <div class="podium-item">
-                    <div class="avatar" id="top2Img"></div>
-                    <div style="font-size: 12px;" id="top2Name">المركز 2</div>
+            <h3 style="text-align: center; font-size: 16px;">Tournament Leaderboard</h3>
+            
+            <div class="podium-container">
+                <div class="podium-box">
+                    <div class="avatar-circle" id="rank2Pic"></div>
+                    <div style="font-size: 11px; color: #94a3b8;">#2 Rank</div>
+                    <div style="font-size: 12px; font-weight: bold;" id="rank2Tickets">0 🎟️</div>
                 </div>
-                <div class="podium-item first">
-                    <div class="avatar" id="top1Img"></div>
-                    <div style="font-size: 12px; font-weight: bold;" id="top1Name">المركز 1</div>
+                <div class="podium-box rank-1">
+                    <i class="fa-solid fa-crown" style="color: #ffd700; font-size: 14px; margin-bottom: 4px;"></i>
+                    <div class="avatar-circle" id="rank1Pic"></div>
+                    <div style="font-size: 12px; font-weight: 800; color: #ffd700;">#1 Champion</div>
+                    <div style="font-size: 12px; font-weight: bold; color: #ffd700;" id="rank1Tickets">0 🎟️</div>
                 </div>
-                <div class="podium-item">
-                    <div class="avatar" id="top3Img"></div>
-                    <div style="font-size: 12px;" id="top3Name">المركز 3</div>
+                <div class="podium-box">
+                    <div class="avatar-circle" id="rank3Pic"></div>
+                    <div style="font-size: 11px; color: #94a3b8;">#3 Rank</div>
+                    <div style="font-size: 12px; font-weight: bold;" id="rank3Tickets">0 🎟️</div>
                 </div>
             </div>
         </div>
 
-        <!-- Tab 5: Profile & Withdrawal -->
+        <!-- TAB 4: PROFILE & WALLET -->
         <div id="profileTab" class="tab-content">
-            <div class="profile-header">
-                <div class="profile-avatar" id="userPhoto"></div>
-                <h3 id="userName">المستخدم</h3>
-                <p style="font-size: 12px; color: #aaa;" id="userId">ID: --</p>
+            <div class="profile-head">
+                <div class="profile-pic" id="userAvatar"></div>
+                <h3 id="profileName" style="font-size: 16px;">User</h3>
+                <p style="font-size: 12px; color: #64748b;" id="profileId">ID: -------</p>
             </div>
 
             <div class="card">
-                <div style="font-size: 13px; color: #aaa;">الرصيد المتاح للسحب</div>
-                <div style="font-size: 22px; font-weight: bold; color: #10b981;" id="userBalance">$0.0000</div>
+                <div style="font-size: 12px; color: #94a3b8;">Withdrawable Balance</div>
+                <div style="font-size: 26px; font-weight: 900; color: #10b981; margin: 4px 0 14px 0;" id="walletUsdt">$0.0000</div>
                 
-                <hr style="border-color: #222e3e; margin: 15px 0;">
+                <hr style="border-color: #222c3c; margin-bottom: 14px;">
                 
-                <h4>سحب الرصيد (TON)</h4>
-                <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">الحد الأدنى للسحب هو $0.01</p>
+                <h4 style="font-size: 14px; margin-bottom: 4px;">Withdraw (TON)</h4>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Minimum withdrawal limit is $0.01</p>
                 
-                <label style="font-size: 12px;">عنوان محفظة TON:</label>
-                <input type="text" id="walletAddress" class="input-box" placeholder="أدخل عنوان المحفظة هنا">
+                <label style="font-size: 12px; color: #94a3b8;">TON Wallet Address:</label>
+                <input type="text" id="tonWalletInput" class="styled-input" placeholder="Enter your TON address">
                 
-                <button class="btn-blue" style="width: 100%; background: #10b981;" onclick="submitWithdrawal()">طلب السحب</button>
+                <button class="gold-btn" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669);" onclick="processWithdrawal()">Request Withdrawal</button>
             </div>
         </div>
 
     </div>
 
-    <!-- Navigation Bar -->
+    <!-- Clean Bottom Navigation (No Extra Blue Highlights) -->
     <div class="bottom-nav">
-        <button class="nav-item active" onclick="switchTab('tasksTab', this)">
-            <i class="fa-solid fa-list-check"></i>
-            <span>المهام</span>
+        <button class="nav-link active" onclick="switchTab('earnTab', this)">
+            <i class="fa-solid fa-sack-dollar"></i>
+            <span>Earn</span>
         </button>
-        <button class="nav-item" onclick="switchTab('friendsTab', this)">
+        <button class="nav-link" onclick="switchTab('friendsTab', this)">
             <i class="fa-solid fa-user-group"></i>
-            <span>الأصدقاء</span>
+            <span>Friends</span>
         </button>
-        <button class="nav-item" onclick="switchTab('mainTab', this)">
-            <div class="center-btn"><i class="fa-solid fa-play"></i></div>
-        </button>
-        <button class="nav-item" onclick="switchTab('leaderboardTab', this)">
+        <button class="nav-link" onclick="switchTab('leaderboardTab', this)">
             <i class="fa-solid fa-trophy"></i>
-            <span>التصنيف</span>
+            <span>Leaderboard</span>
         </button>
-        <button class="nav-item" onclick="switchTab('profileTab', this)">
+        <button class="nav-link" onclick="switchTab('profileTab', this)">
             <i class="fa-solid fa-user"></i>
-            <span>الحساب</span>
+            <span>Profile</span>
         </button>
     </div>
 
@@ -310,91 +383,92 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let balance = 0.0000;
+        let usdt = 0.0000;
         let tickets = 0;
-        let adViews = 0;
-        const maxAdViews = 15;
+        let adCount = 0;
+        const maxAds = 15;
 
-        // Load Telegram User Data
-        const user = tg.initDataUnsafe?.user;
-        if (user) {
-            document.getElementById('userName').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
-            document.getElementById('userId').innerText = 'ID: ' + user.id;
-            document.getElementById('refLink').value = `https://t.me/YourBotName?start=ref_${user.id}`;
-            
-            if (user.photo_url) {
-                document.getElementById('userPhoto').style.backgroundImage = `url('${user.photo_url}')`;
+        // Auto Load Telegram User Profile
+        const telegramUser = tg.initDataUnsafe?.user;
+        if (telegramUser) {
+            const name = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
+            document.getElementById('headerName').innerText = telegramUser.first_name;
+            document.getElementById('profileName').innerText = name;
+            document.getElementById('profileId').innerText = 'ID: ' + telegramUser.id;
+            document.getElementById('refUrl').value = `https://t.me/YOUR_BOT_USERNAME?start=ref_${telegramUser.id}`;
+
+            if (telegramUser.photo_url) {
+                document.getElementById('userAvatar').style.backgroundImage = `url('${telegramUser.photo_url}')`;
+                document.getElementById('rank1Pic').style.backgroundImage = `url('${telegramUser.photo_url}')`;
             }
         }
 
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(btn => btn.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+            element.classList.add('active');
         }
 
-        // Adsgram Ad Handler
+        // Adsgram Integration
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_ADSGRAM_BLOCK_ID" }) : null;
 
-        function showAdsgramAd() {
-            if (adViews >= maxAdViews) {
-                alert("لقد وصلت للحد الأقصى للمشاركات اليوم (15 إعلان).");
+        function watchAdsgramAd() {
+            if (adCount >= maxAds) {
+                alert("Daily limit reached! You have completed 15/15 ad entries.");
                 return;
             }
 
             if (AdController) {
                 AdController.show().then(() => {
-                    processAdReward();
-                }).catch((err) => {
-                    alert("لم يتم اكتمال مشاهدة الإعلان.");
+                    giveReward();
+                }).catch(() => {
+                    alert("Ad was not fully completed.");
                 });
             } else {
-                // For local testing
-                processAdReward();
+                giveReward(); // Local test fallback
             }
         }
 
-        function processAdReward() {
-            adViews++;
-            balance += 0.0003;
+        function giveReward() {
+            adCount++;
+            usdt += 0.0003;
             tickets += 100;
-            
-            document.getElementById('adCount').innerText = adViews;
-            document.getElementById('userBalance').innerText = '$' + balance.toFixed(4);
-            document.getElementById('ticketCount').innerText = tickets;
-            
-            alert("تم إحراز المكافأة: +$0.0003 و +100 تذكرة!");
+
+            document.getElementById('limitCounter').innerText = `${adCount} / ${maxAds}`;
+            document.getElementById('usdtBalance').innerText = usdt.toFixed(4);
+            document.getElementById('walletUsdt').innerText = '$' + usdt.toFixed(4);
+            document.getElementById('ticketsBalance').innerText = tickets;
+            document.getElementById('rank1Tickets').innerText = tickets + ' 🎟️';
+
+            alert("Reward Granted: +$0.0003 USDT & +100 Tickets! 🎟️");
         }
 
-        function copyRef() {
-            const copyText = document.getElementById("refLink");
-            copyText.select();
+        function copyInviteUrl() {
+            const input = document.getElementById("refUrl");
+            input.select();
             document.execCommand("copy");
-            alert("تم نسخ رابط الدعوة!");
+            alert("Invite link copied to clipboard!");
         }
 
-        function submitWithdrawal() {
-            const wallet = document.getElementById('walletAddress').value;
-            if (balance < 0.01) {
-                alert("الحد الأدنى للسحب هو $0.01");
+        function processWithdrawal() {
+            const wallet = document.getElementById('tonWalletInput').value;
+            if (usdt < 0.01) {
+                alert("Minimum withdrawal limit is $0.01 USDT");
                 return;
             }
             if (!wallet) {
-                alert("يرجى إدخال عنوان المحفظة.");
+                alert("Please enter a valid TON wallet address.");
                 return;
             }
 
-            // Send withdrawal payload back to Telegram Bot
             tg.sendData(JSON.stringify({
                 action: "withdraw",
-                amount: balance.toFixed(4),
-                wallet: wallet,
-                user_id: user?.id,
-                username: user?.username || user?.first_name
+                amount: usdt.toFixed(4),
+                wallet: wallet
             }));
-            
-            alert("تم تقديم طلب السحب بنجاح!");
+
+            alert("Withdrawal request submitted successfully!");
         }
     </script>
 </body>
