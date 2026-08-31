@@ -12,6 +12,9 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
@@ -21,7 +24,7 @@
             min-height: 100vh;
             color: #fff;
             padding-bottom: 75px;
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         .overlay {
@@ -38,6 +41,7 @@
             max-width: 430px;
             margin: 0 auto;
             padding: 15px;
+            height: 100vh;
         }
 
         /* Top Bar Header */
@@ -79,57 +83,34 @@
             color: #ffd700;
         }
 
-        /* Tournament Card */
         .tournament-card {
             background: linear-gradient(135deg, rgba(49, 36, 89, 0.85), rgba(21, 16, 43, 0.9));
             border: 1px solid rgba(168, 85, 247, 0.4);
             border-radius: 20px;
-            padding: 16px;
+            padding: 14px;
             text-align: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            margin-bottom: 15px;
         }
 
-        .tournament-title {
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-            color: #f1f5f9;
-        }
+        .tournament-title { font-size: 14px; font-weight: 800; color: #f1f5f9; }
+        .prize-pool { font-size: 12px; color: #cbd5e1; }
+        .prize-pool span { color: #ffd700; font-weight: 800; }
 
-        .prize-pool {
-            font-size: 13px;
-            color: #cbd5e1;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
 
-        .prize-pool span {
-            color: #ffd700;
-            font-weight: 800;
-        }
-
-        /* Sections Routing */
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* Hero Game Area */
+        /* Main Game Screen */
         .hero-section {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 320px;
-            position: relative;
+            height: 55vh;
         }
 
         .hero-character {
-            font-size: 110px;
-            margin: 15px 0;
+            font-size: 100px;
+            margin-bottom: 20px;
             filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
             animation: bounce 2s infinite ease-in-out;
         }
@@ -143,88 +124,50 @@
             background: linear-gradient(135deg, #f59e0b, #d97706);
             border: none;
             color: #fff;
-            padding: 14px 45px;
+            padding: 14px 50px;
             font-size: 18px;
             font-weight: 800;
             border-radius: 25px;
             box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: transform 0.1s;
         }
 
-        .start-btn:active {
-            transform: scale(0.95);
-        }
-
-        /* Leaderboard Section */
-        .leaderboard-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
+        /* Leaderboard */
+        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
         .leaderboard-item {
             background: rgba(30, 27, 55, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
-            padding: 12px 16px;
+            padding: 10px 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .rank-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        .leaderboard-item.user-card {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(30, 27, 55, 0.9));
+            border: 1.5px solid #f59e0b;
         }
 
-        .rank-num {
-            font-weight: 900;
-            font-size: 15px;
-            width: 25px;
-            color: #94a3b8;
+        .rank-info { display: flex; align-items: center; gap: 10px; }
+        .rank-num { font-weight: 900; font-size: 14px; width: 30px; color: #94a3b8; }
+        .player-avatar { width: 35px; height: 35px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; }
+        .player-name { font-size: 13px; font-weight: 700; }
+        .reward-amount { font-weight: 800; font-size: 13px; color: #ffd700; }
+
+        /* Canvas Game Container */
+        #gameCanvasContainer {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: #0d0f17 url('d9e6f5235474c404892c64ca6e8472e4.jpg?v=2') no-repeat center center fixed;
+            background-size: cover;
+            z-index: 200;
         }
 
-        .rank-num.top1 { color: #ffd700; }
-        .rank-num.top2 { color: #e2e8f0; }
-        .rank-num.top3 { color: #cd7f32; }
+        canvas { display: block; margin: 0 auto; }
 
-        .player-avatar {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #3b82f6;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-        }
-
-        .player-name {
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .player-reward {
-            text-align: right;
-        }
-
-        .reward-amount {
-            font-weight: 800;
-            font-size: 14px;
-            color: #ffd700;
-        }
-
-        .reward-usdt {
-            font-size: 11px;
-            color: #94a3b8;
-        }
-
-        /* Professional Bottom Navigation */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
@@ -247,17 +190,10 @@
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
-            transition: color 0.2s;
-            width: 20%;
+            background: none; border: none; width: 20%;
         }
 
-        .nav-btn i {
-            font-size: 18px;
-        }
-
-        .nav-btn.active {
-            color: #f59e0b;
-        }
+        .nav-btn.active { color: #f59e0b; }
     </style>
 </head>
 <body>
@@ -265,7 +201,7 @@
     <div class="overlay"></div>
 
     <div class="app-container">
-        <!-- Top Stats Header -->
+        <!-- Top Header -->
         <div class="top-bar">
             <div class="user-pill">
                 <span>🛡️</span>
@@ -281,135 +217,251 @@
             </div>
         </div>
 
-        <!-- Tournament Info Banner -->
         <div class="tournament-card">
             <div class="tournament-title">Gold Warrior Tournament ⚔️</div>
-            <div class="prize-pool">Prize Pool: <span>4,000,000 $GW</span> (500 Winners)</div>
+            <div class="prize-pool">Prize Pool: <span>4,000,000 $GW</span></div>
         </div>
 
-        <!-- TAB 1: GAME -->
+        <!-- TAB 1: GAME SCREEN -->
         <div id="gameTab" class="tab-content active">
             <div class="hero-section">
                 <div class="hero-character">🥷</div>
-                <button class="start-btn" onclick="startGame()">
-                    Start 🎟️
-                </button>
+                <button class="start-btn" onclick="launchGame()">Start 🎟️</button>
             </div>
         </div>
 
         <!-- TAB 2: LEADERBOARD -->
         <div id="leaderboardTab" class="tab-content">
+            <div class="leaderboard-item user-card">
+                <div class="rank-info">
+                    <span class="rank-num" style="color:#f59e0b;">#105</span>
+                    <div class="player-avatar" style="background:#f59e0b;">🥷</div>
+                    <span class="player-name" id="userRankName">Warrior (You)</span>
+                </div>
+                <div><span class="reward-amount" id="userRankCoins">113 🪙</span></div>
+            </div>
             <div class="leaderboard-list">
                 <div class="leaderboard-item">
                     <div class="rank-info">
-                        <span class="rank-num top1">#1</span>
+                        <span class="rank-num" style="color:#ffd700;">#1</span>
                         <div class="player-avatar" style="background:#f59e0b;">👑</div>
                         <span class="player-name">Kinzar</span>
                     </div>
-                    <div class="player-reward">
-                        <div class="reward-amount">500,000 🪙</div>
-                        <div class="reward-usdt">≈ $64.05</div>
-                    </div>
+                    <span class="reward-amount">500,000 🪙</span>
                 </div>
-
                 <div class="leaderboard-item">
                     <div class="rank-info">
-                        <span class="rank-num top2">#2</span>
+                        <span class="rank-num" style="color:#e2e8f0;">#2</span>
                         <div class="player-avatar" style="background:#64748b;">⚔️</div>
                         <span class="player-name">Teteshka</span>
                     </div>
-                    <div class="player-reward">
-                        <div class="reward-amount">360,000 🪙</div>
-                        <div class="reward-usdt">≈ $46.11</div>
-                    </div>
-                </div>
-
-                <div class="leaderboard-item">
-                    <div class="rank-info">
-                        <span class="rank-num top3">#3</span>
-                        <div class="player-avatar" style="background:#b45309;">🛡️</div>
-                        <span class="player-name">Bot Maker</span>
-                    </div>
-                    <div class="player-reward">
-                        <div class="reward-amount">280,000 🪙</div>
-                        <div class="reward-usdt">≈ $35.86</div>
-                    </div>
-                </div>
-
-                <div class="leaderboard-item">
-                    <div class="rank-info">
-                        <span class="rank-num">#4</span>
-                        <div class="player-avatar">🥷</div>
-                        <span class="player-name">Antoxa</span>
-                    </div>
-                    <div class="player-reward">
-                        <div class="reward-amount">200,000 🪙</div>
-                        <div class="reward-usdt">≈ $25.62</div>
-                    </div>
+                    <span class="reward-amount">360,000 🪙</span>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 3: SHOP / EARN / WALLET PLACEHOLDERS -->
-        <div id="shopTab" class="tab-content" style="text-align: center; padding: 40px 0;">
-            <h3>Shop Coming Soon 🛍️</h3>
-        </div>
-        <div id="earnTab" class="tab-content" style="text-align: center; padding: 40px 0;">
-            <h3>Watch Ads & Tasks 📺</h3>
-        </div>
-        <div id="walletTab" class="tab-content" style="text-align: center; padding: 40px 0;">
-            <h3>Connect TON Wallet 💼</h3>
-        </div>
+        <!-- PLACEHOLDERS -->
+        <div id="shopTab" class="tab-content" style="text-align: center; padding: 40px 0;"><h3>Shop 🛍️</h3></div>
+        <div id="earnTab" class="tab-content" style="text-align: center; padding: 40px 0;"><h3>Earn Ads 📺</h3></div>
+        <div id="walletTab" class="tab-content" style="text-align: center; padding: 40px 0;"><h3>Wallet 💼</h3></div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Canvas Canvas Area -->
+    <div id="gameCanvasContainer">
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <!-- Bottom Nav -->
     <div class="bottom-nav">
-        <div class="nav-btn active" onclick="switchTab('gameTab', this)">
-            <i class="fa-solid fa-gamepad"></i>
-            <span>Game</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('shopTab', this)">
-            <div style="position:relative;">
-                <i class="fa-solid fa-store"></i>
-            </div>
-            <span>Shop</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('leaderboardTab', this)">
-            <i class="fa-solid fa-trophy"></i>
-            <span>Leaderboard</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('earnTab', this)">
-            <i class="fa-solid fa-sack-dollar"></i>
-            <span>Earn</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('walletTab', this)">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Wallet</span>
-        </div>
+        <button class="nav-btn active" onclick="switchTab('gameTab', this)"><i class="fa-solid fa-gamepad"></i><span>Game</span></button>
+        <button class="nav-btn" onclick="switchTab('shopTab', this)"><i class="fa-solid fa-store"></i><span>Shop</span></button>
+        <button class="nav-btn" onclick="switchTab('leaderboardTab', this)"><i class="fa-solid fa-trophy"></i><span>Leaderboard</span></button>
+        <button class="nav-btn" onclick="switchTab('earnTab', this)"><i class="fa-solid fa-sack-dollar"></i><span>Earn</span></button>
+        <button class="nav-btn" onclick="switchTab('walletTab', this)"><i class="fa-solid fa-wallet"></i><span>Wallet</span></button>
     </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
+        let coins = 113;
+        let tickets = 35;
+
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+            let name = tg.initDataUnsafe.user.first_name;
+            document.getElementById('username').innerText = name;
+            document.getElementById('userRankName').innerText = name + " (You)";
         }
 
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-
             document.getElementById(tabId).classList.add('active');
             element.classList.add('active');
-
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.selectionChanged();
-            }
         }
 
-        function startGame() {
-            alert("Starting Jump Game... 🚀");
+        /* --- Canvas Game Logic --- */
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        let gameLoop;
+        let player, platforms, coinsList, monsters, boosters;
+        let score = 0, collectedCoins = 0;
+
+        function launchGame() {
+            if (tickets <= 0) { alert("No tickets remaining!"); return; }
+            tickets--;
+            document.getElementById('ticketCount').innerText = tickets;
+
+            document.getElementById('gameCanvasContainer').style.display = 'block';
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            player = {
+                x: canvas.width / 2 - 20,
+                y: canvas.height - 150,
+                width: 40,
+                height: 40,
+                vy: -12,
+                vx: 0,
+                shield: false,
+                boostTimer: 0
+            };
+
+            platforms = [
+                { x: canvas.width / 2 - 50, y: canvas.height - 50, width: 100, height: 15 }
+            ];
+            for(let i = 0; i < 7; i++) {
+                platforms.push({
+                    x: Math.random() * (canvas.width - 80),
+                    y: canvas.height - 120 - (i * 90),
+                    width: 80,
+                    height: 15
+                });
+            }
+
+            coinsList = [];
+            monsters = [];
+            boosters = [];
+            score = 0;
+            collectedCoins = 0;
+
+            window.addEventListener('deviceorientation', handleMotion);
+            window.addEventListener('touchmove', handleTouch);
+
+            updateGame();
+        }
+
+        function handleTouch(e) {
+            let touchX = e.touches[0].clientX;
+            if (touchX < canvas.width / 2) player.vx = -5;
+            else player.vx = 5;
+        }
+
+        function handleMotion(e) {
+            if (e.gamma) player.vx = e.gamma * 0.3;
+        }
+
+        function updateGame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Physics
+            player.vy += 0.4;
+            player.x += player.vx;
+            player.y += player.vy;
+
+            // Screen edges
+            if (player.x < 0) player.x = canvas.width;
+            if (player.x > canvas.width) player.x = 0;
+
+            // Camera movement
+            if (player.y < canvas.height / 2) {
+                let diff = canvas.height / 2 - player.y;
+                player.y = canvas.height / 2;
+                score += Math.floor(diff);
+
+                platforms.forEach(p => {
+                    p.y += diff;
+                    if (p.y > canvas.height) {
+                        p.y = 0;
+                        p.x = Math.random() * (canvas.width - 80);
+                        // Spawn coins or monsters
+                        if (Math.random() < 0.4) coinsList.push({ x: p.x + 30, y: p.y - 25, collected: false });
+                        if (Math.random() < 0.15) monsters.push({ x: p.x + 20, y: p.y - 30, alive: true });
+                        if (Math.random() < 0.08) boosters.push({ x: p.x + 25, y: p.y - 30, type: '🚀' });
+                    }
+                });
+
+                coinsList.forEach(c => c.y += diff);
+                monsters.forEach(m => m.y += diff);
+                boosters.forEach(b => b.y += diff);
+            }
+
+            // Platform collision
+            platforms.forEach(p => {
+                if (player.vy > 0 && player.x + player.width > p.x && player.x < p.x + p.width &&
+                    player.y + player.height >= p.y && player.y + player.height <= p.y + 15) {
+                    player.vy = -12;
+                }
+                // Draw platform
+                ctx.fillStyle = '#f59e0b';
+                ctx.fillRect(p.x, p.y, p.width, p.height);
+            });
+
+            // Draw & Collect Coins
+            coinsList.forEach(c => {
+                if (!c.collected) {
+                    ctx.font = '20px Arial';
+                    ctx.fillText('🪙', c.x, c.y);
+                    if (Math.hypot(player.x - c.x, player.y - c.y) < 30) {
+                        c.collected = true;
+                        collectedCoins++;
+                    }
+                }
+            });
+
+            // Monsters
+            monsters.forEach(m => {
+                if (m.alive) {
+                    ctx.font = '24px Arial';
+                    ctx.fillText('👾', m.x, m.y);
+                    if (Math.hypot(player.x - m.x, player.y - m.y) < 25) {
+                        if (player.vy > 0) { m.alive = false; player.vy = -12; }
+                        else gameOver();
+                    }
+                }
+            });
+
+            // Boosters
+            boosters.forEach(b => {
+                ctx.font = '22px Arial';
+                ctx.fillText(b.type, b.x, b.y);
+                if (Math.hypot(player.x - b.x, player.y - b.y) < 25) {
+                    player.vy = -22; // Rocket Boost
+                }
+            });
+
+            // Draw Player
+            ctx.font = '36px Arial';
+            ctx.fillText('🥷', player.x, player.y + player.height);
+
+            // Draw HUD
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(`Score: ${score}`, 20, 40);
+            ctx.fillText(`🪙 ${collectedCoins}`, canvas.width - 80, 40);
+
+            // Check Defeat
+            if (player.y > canvas.height) gameOver();
+            else gameLoop = requestAnimationFrame(updateGame);
+        }
+
+        function gameOver() {
+            cancelAnimationFrame(gameLoop);
+            coins += collectedCoins;
+            document.getElementById('coinCount').innerText = coins;
+            document.getElementById('userRankCoins').innerText = coins + ' 🪙';
+            alert(`Game Over! Score: ${score} | Coins: +${collectedCoins}`);
+            document.getElementById('gameCanvasContainer').style.display = 'none';
         }
     </script>
 </body>
