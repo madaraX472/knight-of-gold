@@ -5,17 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Earn & Contest App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad-index.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
         
-        /* تحسين إضاءة الخلفية الشفافة وتفتيح الألوان */
         body { 
-            background: linear-gradient(135deg, #1e293b, #0f172a); 
-            color: #f8fafc; 
-            padding-bottom: 75px; 
+            background: #0b0e14 url('https://i.ibb.co/L8yX7M6/pixel-bg.jpg') no-repeat center center fixed; 
+            background-size: cover;
+            color: #fff; 
+            padding-bottom: 70px; 
             min-height: 100vh;
+        }
+
+        /* الطبقة المظلمة الأنيقة فوق الخلفية */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(11, 14, 20, 0.85);
+            z-index: -1;
         }
 
         .header { 
@@ -23,41 +32,44 @@
             justify-content: space-between; 
             align-items: center; 
             padding: 15px; 
-            background: rgba(30, 41, 59, 0.9); 
-            border-bottom: 1px solid #334155; 
-            backdrop-filter: blur(10px);
+            background: rgba(18, 24, 38, 0.95); 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
         }
         .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #38bdf8; }
+        .user-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #f39c12; object-fit: cover; }
         .stats-badge { 
-            background: #334155; 
-            border: 1px solid #475569; 
-            border-radius: 20px; 
-            padding: 6px 12px; 
+            background: rgba(0, 0, 0, 0.4); 
+            border: 1px solid #f39c12; 
+            border-radius: 18px; 
+            padding: 5px 12px; 
             font-size: 13px; 
             font-weight: bold; 
-            color: #fbbf24; 
+            color: #f1c40f; 
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .tab-content { display: none; padding: 15px; }
         .tab-content.active { display: block; }
 
-        /* بطاقات إضاءة واضحة ومشرقة */
+        /* التصميم القديم الفخم للبطاقات */
         .card { 
-            background: rgba(30, 41, 59, 0.7); 
-            border: 1px solid #475569; 
-            border-radius: 14px; 
+            background: rgba(18, 24, 38, 0.85); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border-radius: 16px; 
             padding: 16px; 
             margin-bottom: 15px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
         }
-        .card-title { font-size: 16px; font-weight: bold; margin-bottom: 10px; color: #38bdf8; }
+        .card-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #3498db; display: flex; align-items: center; gap: 6px; }
 
         /* شريط التقدم */
-        .progress-container { background: #0f172a; border-radius: 8px; height: 12px; width: 100%; overflow: hidden; margin: 10px 0; border: 1px solid #334155; }
-        .progress-bar { background: linear-gradient(90deg, #22c55e, #16a34a); height: 100%; width: 0%; transition: width 0.3s ease; }
+        .progress-container { background: rgba(0, 0, 0, 0.5); border-radius: 10px; height: 10px; width: 100%; overflow: hidden; margin: 10px 0; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .progress-bar { background: linear-gradient(90deg, #2ecc71, #27ae60); height: 100%; width: 0%; transition: width 0.3s ease; }
 
-        /* الأزرار الاحترافية */
+        /* الأزرار الذهبية والخضراء القديمة */
         .btn-action { 
             width: 100%; 
             padding: 13px; 
@@ -66,30 +78,42 @@
             font-size: 14px; 
             font-weight: bold; 
             cursor: pointer; 
-            transition: all 0.2s ease; 
-            background: linear-gradient(90deg, #16a34a, #22c55e); 
+            background: linear-gradient(180deg, #2ecc71, #27ae60); 
             color: #fff; 
             margin-top: 5px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+            transition: 0.2s;
         }
         .btn-action:active { transform: scale(0.98); }
-        .btn-action:disabled { background: #475569; color: #94a3b8; cursor: not-allowed; transform: none; }
+        .btn-action:disabled { background: #34495e; color: #7f8c8d; box-shadow: none; cursor: not-allowed; }
 
-        /* مكافآت اليومية */
+        /* المكافآت اليومية البكسل القديمة */
         .daily-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-        .daily-box { background: #1e293b; border: 1px solid #475569; border-radius: 8px; padding: 10px; text-align: center; font-size: 11px; }
-        .daily-box.active { border-color: #38bdf8; background: rgba(56, 189, 248, 0.15); font-weight: bold; }
-        .daily-box.claimed { border-color: #22c55e; opacity: 0.4; }
+        .daily-box { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px; text-align: center; font-size: 11px; }
+        .daily-box.active { border-color: #3498db; background: rgba(52, 152, 219, 0.2); font-weight: bold; }
+        .daily-box.claimed { border-color: #2ecc71; opacity: 0.3; }
 
-        /* قائمة الترتيب */
-        .leader-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #334155; }
-        .leader-item.user-highlight { background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; border-radius: 10px; }
+        /* تصميم الترتيب القديم البكسل الفخم */
+        .leader-item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 12px; 
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+        .leader-item.user-highlight { 
+            background: rgba(241, 196, 15, 0.15); 
+            border: 1px solid #f1c40f; 
+        }
+        .rank-num { font-weight: bold; font-size: 14px; width: 30px; color: #f39c12; }
 
-        /* واجهة السحب */
-        .input-group { margin-bottom: 12px; text-align: right; }
-        .input-group label { display: block; font-size: 12px; color: #cbd5e1; margin-bottom: 5px; }
-        .input-field { width: 100%; padding: 12px; background: #0f172a; border: 1px solid #475569; border-radius: 8px; color: #fff; outline: none; font-size: 14px; }
-        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; margin-top: 5px; background: #f59e0b; color: #0f172a; font-weight: bold; }
+        /* نافذة السحب */
+        .input-group { margin-bottom: 12px; text-align: left; }
+        .input-group label { display: block; font-size: 12px; color: #bdc3c7; margin-bottom: 5px; }
+        .input-field { width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; outline: none; font-size: 14px; }
 
         /* القائمة السفلية */
         .nav-bar { 
@@ -97,15 +121,16 @@
             bottom: 0; 
             left: 0; 
             width: 100%; 
-            background: #0f172a; 
+            background: rgba(18, 24, 38, 0.98); 
             display: flex; 
-            border-top: 1px solid #334155; 
+            border-top: 1px solid rgba(255, 255, 255, 0.1); 
         }
-        .nav-item { flex: 1; text-align: center; padding: 14px 0; font-size: 13px; color: #94a3b8; cursor: pointer; }
-        .nav-item.active { color: #38bdf8; font-weight: bold; border-top: 2px solid #38bdf8; }
+        .nav-item { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: #7f8c8d; cursor: pointer; }
+        .nav-item.active { color: #f39c12; font-weight: bold; }
     </style>
 </head>
 <body>
+    <div class="overlay"></div>
 
     <div class="header">
         <div class="user-info">
@@ -120,10 +145,9 @@
 
     <!-- TAB 1: EARN -->
     <div id="tab-earn" class="tab-content active">
-        <!-- Adsgram Ads Section -->
         <div class="card">
             <div class="card-title">📺 Main Ads (Adsgram)</div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #bdc3c7;">
                 <span>Progress: <b id="adsgramCount">0</b>/100</span>
                 <span id="adsgramTimer"></span>
             </div>
@@ -133,25 +157,23 @@
             <button id="btnAdsgram" class="btn-action" onclick="watchAdsgramAd()">Watch Ad (+1 Ticket)</button>
         </div>
 
-        <!-- Secondary Ads Section -->
         <div class="card">
             <div class="card-title">🎬 Bonus Ads</div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #cbd5e1;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #bdc3c7;">
                 <span>Progress: <b id="secCount">0</b>/20</span>
                 <span id="secTimer"></span>
             </div>
             <div class="progress-container">
-                <div id="secBar" class="progress-bar" style="background: linear-gradient(90deg, #0284c7, #38bdf8);"></div>
+                <div id="secBar" class="progress-bar" style="background: linear-gradient(90deg, #3498db, #2980b9);"></div>
             </div>
-            <button id="btnSecAd" class="btn-action" style="background: linear-gradient(90deg, #0284c7, #38bdf8);" onclick="watchSecondaryAd()">Watch Bonus Ad (+1 Ticket)</button>
+            <button id="btnSecAd" class="btn-action" style="background: linear-gradient(180deg, #3498db, #2980b9);" onclick="watchSecondaryAd()">Watch Bonus Ad (+1 Ticket)</button>
         </div>
 
-        <!-- Daily Reward Section -->
         <div class="card">
             <div class="card-title">📅 Daily Reward (Watch Ad to Claim)</div>
             <div class="daily-grid" id="dailyGrid"></div>
-            <button id="btnDaily" class="btn-action" style="margin-top: 12px; background: linear-gradient(90deg, #d97706, #f59e0b);" onclick="claimDailyReward()">Claim Today's Reward</button>
-            <div id="dailyTimer" style="text-align: center; font-size: 12px; color: #cbd5e1; margin-top: 6px;"></div>
+            <button id="btnDaily" class="btn-action" style="margin-top: 12px; background: linear-gradient(180deg, #f39c12, #d35400);" onclick="claimDailyReward()">Claim Today's Reward</button>
+            <div id="dailyTimer" style="text-align: center; font-size: 12px; color: #bdc3c7; margin-top: 6px;"></div>
         </div>
     </div>
 
@@ -159,22 +181,20 @@
     <div id="tab-contest" class="tab-content">
         <div class="card">
             <div class="card-title">🏆 Global Live Leaderboard</div>
-            <div style="font-size: 12px; color: #cbd5e1; margin-bottom: 12px;">End of Season Reward: Top 10 users get automatic wallet payout!</div>
+            <div style="font-size: 12px; color: #bdc3c7; margin-bottom: 12px;">End of Season Reward: Top 10 users get automatic wallet payout!</div>
             <div id="leaderboardContainer">Loading real-time ranks...</div>
         </div>
     </div>
 
-    <!-- TAB 3: PROFILE & WITHDRAWAL -->
+    <!-- TAB 3: PROFILE -->
     <div id="tab-profile" class="tab-content">
-        <!-- Account & Referral Stats -->
         <div class="card">
             <div class="card-title">👤 Account & Referrals</div>
-            <p style="font-size: 13px; color: #cbd5e1; margin-bottom: 10px;">Earn <b>$0.01 + 100 Tickets</b> per active referral (Invitee must watch 3 ads).</p>
-            <button class="btn-action" onclick="copyInviteLink()" style="background: linear-gradient(90deg, #7c3aed, #9333ea);">📋 Copy Referral Link</button>
+            <p style="font-size: 13px; color: #bdc3c7; margin-bottom: 10px;">Earn <b>$0.01 + 100 Tickets</b> per active referral (Invitee must watch 3 ads).</p>
+            <button class="btn-action" onclick="copyInviteLink()" style="background: linear-gradient(180deg, #8e44ad, #9b59b6);">📋 Copy Referral Link</button>
         </div>
 
-        <!-- Withdrawal Panel -->
-        <div class="card" style="border-color: #f59e0b55;">
+        <div class="card">
             <div class="card-title">💸 USDT Withdrawal</div>
             <div class="input-group">
                 <label>Receiver Wallet Address (USDT - TON)</label>
@@ -185,12 +205,11 @@
                 <input type="number" id="withdrawAmount" class="input-field" placeholder="0.0150" step="0.001">
             </div>
             <button class="btn-action" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
-            
             <div id="withdrawalHistory" style="margin-top: 15px;"></div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- NAV BAR -->
     <div class="nav-bar">
         <div class="nav-item active" onclick="switchTab('earn', this)">Earn</div>
         <div class="nav-item" onclick="switchTab('contest', this)">Contest</div>
@@ -198,21 +217,23 @@
     </div>
 
     <script>
-        // 1. Firebase Live Connection
+        // 1. Firebase Initialization
         const firebaseConfig = {
             databaseURL: "https://earn-money-336fd-default-rtdb.firebaseio.com"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 2. Telegram WebApp Integration
+        // 2. Adsgram Controller Setup (Replace ID with your Adsgram Block ID if needed)
+        const AdController = window.Adsgram?.init({ blockId: "your-adsgram-block-id" });
+
+        // 3. Telegram WebApp Integration & Photo Fix
         const tg = window.Telegram?.WebApp;
         tg?.expand();
 
-        const user = tg?.initDataUnsafe?.user || { id: "dev_user_1", first_name: "Local Dev", photo_url: "" };
+        const user = tg?.initDataUnsafe?.user || { id: "dev_user_1", first_name: "Madara ~", photo_url: "" };
         const userId = user.id.toString();
 
-        // Unique Hardware Signature for Anti-Multi Account Logic
         let deviceID = localStorage.getItem('app_device_id');
         if (!deviceID) {
             deviceID = 'DEV_' + Math.random().toString(36).substring(2, 15);
@@ -245,16 +266,17 @@
             { usd: 0.035, tickets: 1000 }
         ];
 
-        // 3. Database Sync & Security Check
         function initData() {
             document.getElementById('uName').innerText = userData.name;
-            if (user.photo_url) document.getElementById('uAvatar').src = user.photo_url;
+            if (user.photo_url) {
+                document.getElementById('uAvatar').src = user.photo_url;
+            }
 
             db.ref('users/' + userId).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     if (data.deviceId && data.deviceId !== deviceID) {
-                        alert("Access Denied: Multi-account detected on this device!");
+                        alert("Device Mismatch: Multi-account access denied!");
                         document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Device Access Blocked</h2>";
                         return;
                     }
@@ -265,13 +287,12 @@
                 updateUI();
             });
 
-            // Real-Time Global Ranking Listener
+            // Live Leaderboard Realtime Firebase Sync
             db.ref('users').orderByChild('tickets').limitToLast(50).on('value', (snapshot) => {
                 renderGlobalLeaderboard(snapshot);
             });
         }
 
-        // 4. Interface Dynamic Update Engine
         function updateUI() {
             document.getElementById('uBalance').innerText = `$${userData.balance.toFixed(4)}`;
             document.getElementById('uTickets').innerText = `🎫 ${userData.tickets}`;
@@ -300,51 +321,54 @@
             renderDailyGrid();
         }
 
-        // 5. Watching Ads Mechanism (20-Second Cooldown)
-        let isAdPlaying = false;
+        // Ads Watcher with Real Adsgram Handling
         function watchAdsgramAd() {
-            if (isAdPlaying) return;
             if (userData.adsgramCount >= 100) return alert("Daily limit reached (100 Ads). Please wait 5 hours.");
 
-            isAdPlaying = true;
-            alert("Watching Ad... Cooldown active (20s)");
-            setTimeout(() => {
-                userData.adsgramCount += 1;
-                userData.tickets += 1;
-                userData.totalAdsWatched += 1;
-
-                if (userData.adsgramCount >= 100) {
-                    userData.adsgramCooldown = Date.now() + (5 * 60 * 60 * 1000); // 5 Hours
-                }
-                
-                checkReferralReward();
-                saveCloudData();
-                isAdPlaying = false;
-            }, 20000);
+            if (AdController) {
+                AdController.show().then(() => {
+                    grantAdReward('adsgram');
+                }).catch(() => {
+                    alert("Ad failed to load or closed early.");
+                });
+            } else {
+                // Simulation Mode for testing if Adsgram SDK is unavailable
+                alert("Simulating Ad View (20s Cooldown)...");
+                setTimeout(() => grantAdReward('adsgram'), 20000);
+            }
         }
 
         function watchSecondaryAd() {
-            if (isAdPlaying) return;
-            if (userData.secCount >= 20) return alert("Limit reached (20 Ads). Please wait 5 hours.");
+            if (userData.secCount >= 20) return alert("Bonus limit reached (20 Ads). Please wait 5 hours.");
 
-            isAdPlaying = true;
-            alert("Watching Bonus Ad... Cooldown active (20s)");
-            setTimeout(() => {
-                userData.secCount += 1;
-                userData.tickets += 1;
-                userData.totalAdsWatched += 1;
-
-                if (userData.secCount >= 20) {
-                    userData.secCooldown = Date.now() + (5 * 60 * 60 * 1000);
-                }
-
-                checkReferralReward();
-                saveCloudData();
-                isAdPlaying = false;
-            }, 20000);
+            if (AdController) {
+                AdController.show().then(() => {
+                    grantAdReward('sec');
+                }).catch(() => {
+                    alert("Ad failed to load.");
+                });
+            } else {
+                alert("Simulating Ad View (20s Cooldown)...");
+                setTimeout(() => grantAdReward('sec'), 20000);
+            }
         }
 
-        // 6. 7-Day Login Streak System
+        function grantAdReward(type) {
+            if (type === 'adsgram') {
+                userData.adsgramCount += 1;
+                if (userData.adsgramCount >= 100) userData.adsgramCooldown = Date.now() + (5 * 60 * 60 * 1000);
+            } else {
+                userData.secCount += 1;
+                if (userData.secCount >= 20) userData.secCooldown = Date.now() + (5 * 60 * 60 * 1000);
+            }
+
+            userData.tickets += 1;
+            userData.totalAdsWatched += 1;
+            checkReferralReward();
+            saveCloudData();
+        }
+
+        // Daily Login Strict Protection (Requires Watching Ad + 24 Hours Lock)
         function renderDailyGrid() {
             const grid = document.getElementById('dailyGrid');
             grid.innerHTML = "";
@@ -368,25 +392,41 @@
         }
 
         function claimDailyReward() {
-            alert("Watch mandatory ad to claim reward...");
-            setTimeout(() => {
-                const currentReward = dailyRewards[userData.dailyDay - 1];
-                userData.balance += currentReward.usd;
-                userData.tickets += currentReward.tickets;
-                userData.lastDailyTimestamp = Date.now();
+            const now = Date.now();
+            if ((now - userData.lastDailyTimestamp) < (24 * 60 * 60 * 1000)) {
+                return alert("You can only claim daily rewards once every 24 hours!");
+            }
 
-                if (userData.dailyDay >= 7) {
-                    userData.dailyDay = 1;
-                } else {
-                    userData.dailyDay += 1;
-                }
-
-                saveCloudData();
-                alert(`Claimed Day ${userData.dailyDay - 1} Reward!`);
-            }, 3000);
+            // Forced Ad Watch before claiming
+            if (AdController) {
+                AdController.show().then(() => {
+                    processDailyClaim();
+                }).catch(() => {
+                    alert("You must watch the complete ad to claim your reward!");
+                });
+            } else {
+                alert("Ad watched successfully! Granting reward...");
+                processDailyClaim();
+            }
         }
 
-        // 7. Referral Logic
+        function processDailyClaim() {
+            const currentReward = dailyRewards[userData.dailyDay - 1];
+            userData.balance += currentReward.usd;
+            userData.tickets += currentReward.tickets;
+            userData.lastDailyTimestamp = Date.now();
+
+            if (userData.dailyDay >= 7) {
+                userData.dailyDay = 1;
+            } else {
+                userData.dailyDay += 1;
+            }
+
+            saveCloudData();
+            alert(`Claimed Day ${userData.dailyDay - 1} Reward Successfully!`);
+        }
+
+        // Referral System (0.01$ + 100 Tickets)
         function checkReferralReward() {
             if (userData.referredBy && userData.totalAdsWatched === 3) {
                 db.ref('users/' + userData.referredBy).transaction((inviter) => {
@@ -402,10 +442,10 @@
         function copyInviteLink() {
             const inviteLink = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
             navigator.clipboard.writeText(inviteLink);
-            alert("Referral link copied!");
+            alert("Referral Link Copied!");
         }
 
-        // 8. Global Ranking Leaderboard Engine
+        // Global Leaderboard - Classic Dark/Golden Pixel Look
         function renderGlobalLeaderboard(snapshot) {
             const container = document.getElementById('leaderboardContainer');
             container.innerHTML = "";
@@ -422,12 +462,12 @@
                 const div = document.createElement('div');
                 div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
                 div.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <b style="color: #38bdf8;">#${index + 1}</b>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="rank-num">#${index + 1}</span>
                         <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
                         <div>
                             <div style="font-size: 13px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
-                            <div style="font-size: 11px; color: #cbd5e1;">🎫 ${item.tickets} Tickets</div>
+                            <div style="font-size: 11px; color: #f39c12;">🎫 ${item.tickets} Tickets</div>
                         </div>
                     </div>
                 `;
@@ -435,12 +475,12 @@
             });
         }
 
-        // 9. Withdrawal Engine
+        // Withdrawal Handling
         function requestWithdrawal() {
             const addr = document.getElementById('withdrawAddress').value.trim();
             const amt = parseFloat(document.getElementById('withdrawAmount').value);
 
-            if (!addr) return alert("Please enter wallet address.");
+            if (!addr) return alert("Please enter a valid wallet address.");
             if (isNaN(amt) || amt < 0.0150) return alert("Minimum withdrawal is $0.0150 USDT.");
             if (amt > userData.balance) return alert("Insufficient balance!");
 
@@ -454,15 +494,15 @@
                 amount: amt,
                 status: "Pending ⏳",
                 timestamp: Date.now()
-             });
+            });
 
             document.getElementById('withdrawalHistory').innerHTML = `
-                <div style="background: #1e293b; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #475569;">
-                    <span class="status-badge">Processing ⏳</span>
-                    <p style="font-size: 12px; margin-top: 6px; color: #cbd5e1;">Your request for <b>$${amt} USDT</b> has been received and will be processed soon to: ${addr}</p>
+                <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <span style="background: #f39c12; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">Pending ⏳</span>
+                    <p style="font-size: 12px; margin-top: 6px; color: #bdc3c7;">Withdrawal request for <b>$${amt} USDT</b> submitted to: ${addr}</p>
                 </div>
             `;
-            alert("Withdrawal request submitted!");
+            alert("Withdrawal submitted successfully!");
         }
 
         function saveCloudData() {
