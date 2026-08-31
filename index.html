@@ -45,15 +45,15 @@
             align-items: center;
             gap: 8px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 215, 0, 0.2);
-            padding: 6px 12px;
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            padding: 6px 14px;
             border-radius: 20px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .stat-pill {
-            background: rgba(255, 215, 0, 0.1);
+            background: rgba(255, 215, 0, 0.08);
             border: 1px solid rgba(255, 215, 0, 0.3);
             color: #ffd700;
             padding: 6px 12px;
@@ -70,7 +70,7 @@
             background: #141a24;
             border: 1px solid #222c3c;
             border-radius: 18px;
-            padding: 16px;
+            padding: 18px;
             margin-bottom: 14px;
         }
 
@@ -78,6 +78,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            gap: 12px;
         }
 
         .task-left {
@@ -87,49 +88,54 @@
         }
 
         .adsgram-logo {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ff9900, #d97706);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 900;
-            font-size: 20px;
+            font-size: 24px;
             color: #fff;
-            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
         }
 
         .ticket-badge {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
             background: rgba(255, 215, 0, 0.15);
             color: #ffd700;
-            padding: 2px 8px;
-            border-radius: 6px;
-            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 12px;
             font-weight: 700;
-            margin-top: 4px;
+            margin-top: 6px;
         }
 
-        /* Golden Glowing Button */
+        /* Golden Glowing Buttons */
         .gold-btn {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: #ffffff;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 22px;
             font-weight: 800;
-            font-size: 13px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
         }
 
         .gold-btn:active {
-            transform: scale(0.94);
-            box-shadow: 0 0 22px #ffd700, 0 0 35px #f59e0b; /* Yellow Glow Effect */
+            transform: scale(0.95);
+            box-shadow: 0 0 22px #ffd700, 0 0 35px #f59e0b; /* Yellow/Gold Glow */
+        }
+
+        .btn-large {
+            width: 100%;
+            padding: 14px;
+            font-size: 15px;
         }
 
         /* Tabs Logic */
@@ -137,12 +143,24 @@
         .tab-content.active { display: block; }
 
         /* Leaderboard UI */
+        .top-15-header {
+            text-align: center;
+            background: rgba(255, 215, 0, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            padding: 10px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            color: #ffd700;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
         .podium-container {
             display: flex;
             justify-content: center;
             align-items: flex-end;
             gap: 10px;
-            margin: 25px 0 15px 0;
+            margin: 20px 0;
         }
 
         .podium-box {
@@ -156,59 +174,78 @@
 
         .podium-box.rank-1 {
             border-color: #ffd700;
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
             transform: translateY(-8px);
         }
 
         .avatar-circle {
-            width: 48px;
-            height: 48px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: #222c3c;
             margin: 0 auto 8px auto;
             background-size: cover;
             background-position: center;
             border: 2px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #64748b;
         }
 
         .podium-box.rank-1 .avatar-circle {
             border-color: #ffd700;
         }
 
-        /* Profile Section */
+        /* Profile & Wallet Section */
         .profile-head {
             text-align: center;
             margin-bottom: 20px;
         }
 
         .profile-pic {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
             margin: 0 auto 10px auto;
-            border: 2px solid #f59e0b;
+            border: 3px solid #f59e0b;
             background-size: cover;
             background-position: center;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #f59e0b;
+            background-color: #141a24;
+        }
+
+        .wallet-label {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+            display: block;
         }
 
         .styled-input {
             width: 100%;
-            padding: 12px;
+            padding: 12px 14px;
             background: #0b0e14;
             border: 1px solid #222c3c;
             border-radius: 12px;
             color: #fff;
-            margin: 8px 0 14px 0;
-            font-size: 13px;
+            margin-bottom: 14px;
+            font-size: 14px;
+            outline: none;
         }
 
         .styled-input:focus {
             border-color: #f59e0b;
-            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.3);
         }
 
-        /* Clean Golden Navigation Bar */
+        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -244,7 +281,7 @@
 
         .nav-link:active {
             color: #ffd700;
-            text-shadow: 0 0 12px #ffd700; /* Click Glow */
+            text-shadow: 0 0 12px #ffd700;
         }
 
         .nav-link.active {
@@ -256,7 +293,7 @@
 
     <div class="container">
         
-        <!-- Top Balance Summary -->
+        <!-- Header User Stats -->
         <div class="top-stats">
             <div class="user-badge">
                 <i class="fa-solid fa-crown" style="color: #ffd700;"></i>
@@ -276,90 +313,104 @@
 
         <!-- TAB 1: EARN (ADS) -->
         <div id="earnTab" class="tab-content active">
-            <h3 style="margin-bottom: 12px; font-size: 16px; color: #f1f5f9;">Ad Networks</h3>
+            <h3 style="margin-bottom: 14px; font-size: 16px; color: #f1f5f9;">Ad Networks</h3>
             
             <div class="card task-card">
                 <div class="task-left">
-                    <div class="adsgram-logo">A</div>
+                    <div class="adsgram-logo">
+                        <i class="fa-solid fa-play"></i>
+                    </div>
                     <div>
-                        <div style="font-weight: 800; font-size: 14px;">Adsgram</div>
+                        <div style="font-weight: 800; font-size: 15px;">Adsgram</div>
                         <div style="font-size: 12px; color: #94a3b8;">Watch Video Ad</div>
                         <div class="ticket-badge">
                             <i class="fa-solid fa-ticket"></i> +100 Tickets | +$0.0003
                         </div>
                     </div>
                 </div>
-                <button class="gold-btn" onclick="watchAdsgramAd()">Watch</button>
-            </div>
-
-            <div class="card" style="text-align: center; background: rgba(20, 26, 36, 0.6);">
-                <span style="font-size: 12px; color: #94a3b8;">Tournament Ad Limit: </span>
-                <span style="font-size: 13px; font-weight: 800; color: #ffd700;" id="limitCounter">0 / 15</span>
+                <button class="gold-btn" style="padding: 12px 20px; font-size: 14px;" onclick="watchAdsgramAd()">Watch</button>
             </div>
         </div>
 
         <!-- TAB 2: FRIENDS / REFERRAL -->
         <div id="friendsTab" class="tab-content">
-            <div class="card" style="text-align: center; padding: 22px 16px;">
-                <i class="fa-solid fa-users" style="font-size: 36px; color: #f59e0b; margin-bottom: 12px;"></i>
+            <div class="card" style="text-align: center; padding: 24px 16px;">
+                <i class="fa-solid fa-users" style="font-size: 40px; color: #f59e0b; margin-bottom: 14px;"></i>
                 <h3 style="margin-bottom: 6px;">Invite Friends</h3>
-                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 16px;">Earn extra competition tickets for every invited friend!</p>
+                <p style="font-size: 12px; color: #94a3b8; margin-bottom: 18px;">Earn extra tickets for every invited friend to boost your ranking!</p>
+                
+                <label class="wallet-label" style="text-align: left;">Your Referral Link:</label>
                 <input type="text" id="refUrl" class="styled-input" readonly value="Loading link...">
-                <button class="gold-btn" style="width: 100%;" onclick="copyInviteUrl()">Copy Invite Link</button>
+                
+                <button class="gold-btn btn-large" onclick="copyInviteUrl()">Copy Invite Link</button>
             </div>
         </div>
 
         <!-- TAB 3: LEADERBOARD -->
         <div id="leaderboardTab" class="tab-content">
-            <h3 style="text-align: center; font-size: 16px;">Tournament Leaderboard</h3>
-            
+            <div class="top-15-header">
+                <i class="fa-solid fa-trophy"></i> Top 15 Players Win The Tournament!
+            </div>
+
             <div class="podium-container">
                 <div class="podium-box">
-                    <div class="avatar-circle" id="rank2Pic"></div>
+                    <div class="avatar-circle" id="rank2Pic"><i class="fa-solid fa-user"></i></div>
                     <div style="font-size: 11px; color: #94a3b8;">#2 Rank</div>
                     <div style="font-size: 12px; font-weight: bold;" id="rank2Tickets">0 🎟️</div>
                 </div>
                 <div class="podium-box rank-1">
                     <i class="fa-solid fa-crown" style="color: #ffd700; font-size: 14px; margin-bottom: 4px;"></i>
-                    <div class="avatar-circle" id="rank1Pic"></div>
+                    <div class="avatar-circle" id="rank1Pic"><i class="fa-solid fa-user"></i></div>
                     <div style="font-size: 12px; font-weight: 800; color: #ffd700;">#1 Champion</div>
                     <div style="font-size: 12px; font-weight: bold; color: #ffd700;" id="rank1Tickets">0 🎟️</div>
                 </div>
                 <div class="podium-box">
-                    <div class="avatar-circle" id="rank3Pic"></div>
+                    <div class="avatar-circle" id="rank3Pic"><i class="fa-solid fa-user"></i></div>
                     <div style="font-size: 11px; color: #94a3b8;">#3 Rank</div>
                     <div style="font-size: 12px; font-weight: bold;" id="rank3Tickets">0 🎟️</div>
                 </div>
             </div>
         </div>
 
-        <!-- TAB 4: PROFILE & WALLET -->
+        <!-- TAB 4: PROFESSIONAL WALLET & PROFILE -->
         <div id="profileTab" class="tab-content">
             <div class="profile-head">
-                <div class="profile-pic" id="userAvatar"></div>
+                <div class="profile-pic" id="userAvatar">
+                    <i class="fa-solid fa-user" id="avatarFallback"></i>
+                </div>
                 <h3 id="profileName" style="font-size: 16px;">User</h3>
                 <p style="font-size: 12px; color: #64748b;" id="profileId">ID: -------</p>
             </div>
 
             <div class="card">
-                <div style="font-size: 12px; color: #94a3b8;">Withdrawable Balance</div>
-                <div style="font-size: 26px; font-weight: 900; color: #10b981; margin: 4px 0 14px 0;" id="walletUsdt">$0.0000</div>
+                <h4 style="font-size: 15px; margin-bottom: 14px; color: #f59e0b; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-wallet"></i> Wallet & Withdrawal
+                </h4>
+
+                <!-- 1. Available Balance -->
+                <label class="wallet-label">Available Balance for Withdrawal:</label>
+                <div style="font-size: 26px; font-weight: 900; color: #10b981; margin-bottom: 16px;" id="walletUsdt">$0.0000</div>
                 
-                <hr style="border-color: #222c3c; margin-bottom: 14px;">
+                <hr style="border-color: #222c3c; margin-bottom: 16px;">
                 
-                <h4 style="font-size: 14px; margin-bottom: 4px;">Withdraw (TON)</h4>
-                <p style="font-size: 11px; color: #64748b; margin-bottom: 10px;">Minimum withdrawal limit is $0.01</p>
+                <!-- 2. Amount to Withdraw -->
+                <label class="wallet-label">Amount to Withdraw (USDT):</label>
+                <input type="number" id="withdrawAmountInput" class="styled-input" placeholder="0.01" step="0.001">
+
+                <!-- 3. TON Wallet Address -->
+                <label class="wallet-label">TON Wallet Address:</label>
+                <input type="text" id="tonWalletInput" class="styled-input" placeholder="EQD... or UQD...">
                 
-                <label style="font-size: 12px; color: #94a3b8;">TON Wallet Address:</label>
-                <input type="text" id="tonWalletInput" class="styled-input" placeholder="Enter your TON address">
-                
-                <button class="gold-btn" style="width: 100%; background: linear-gradient(135deg, #10b981, #059669);" onclick="processWithdrawal()">Request Withdrawal</button>
+                <p style="font-size: 11px; color: #64748b; margin-bottom: 14px;">Minimum withdrawal limit is $0.01 USDT</p>
+
+                <!-- 4. Submit Button -->
+                <button class="gold-btn btn-large" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="processWithdrawal()">Request Withdrawal</button>
             </div>
         </div>
 
     </div>
 
-    <!-- Clean Bottom Navigation (No Extra Blue Highlights) -->
+    <!-- Navigation Bar -->
     <div class="bottom-nav">
         <button class="nav-link active" onclick="switchTab('earnTab', this)">
             <i class="fa-solid fa-sack-dollar"></i>
@@ -385,21 +436,27 @@
 
         let usdt = 0.0000;
         let tickets = 0;
-        let adCount = 0;
-        const maxAds = 15;
 
-        // Auto Load Telegram User Profile
+        // Load Telegram User Info & Avatar safely
         const telegramUser = tg.initDataUnsafe?.user;
         if (telegramUser) {
             const name = telegramUser.first_name + (telegramUser.last_name ? ' ' + telegramUser.last_name : '');
             document.getElementById('headerName').innerText = telegramUser.first_name;
             document.getElementById('profileName').innerText = name;
             document.getElementById('profileId').innerText = 'ID: ' + telegramUser.id;
-            document.getElementById('refUrl').value = `https://t.me/YOUR_BOT_USERNAME?start=ref_${telegramUser.id}`;
+            
+            // Set Bot Referral Link
+            document.getElementById('refUrl').value = `https://t.me/Knight_Gold_bot?start=ref_${telegramUser.id}`;
 
+            // Load User Profile Picture if available
             if (telegramUser.photo_url) {
-                document.getElementById('userAvatar').style.backgroundImage = `url('${telegramUser.photo_url}')`;
-                document.getElementById('rank1Pic').style.backgroundImage = `url('${telegramUser.photo_url}')`;
+                const avatarEl = document.getElementById('userAvatar');
+                avatarEl.style.backgroundImage = `url('${telegramUser.photo_url}')`;
+                document.getElementById('avatarFallback').style.display = 'none';
+
+                const rank1El = document.getElementById('rank1Pic');
+                rank1El.style.backgroundImage = `url('${telegramUser.photo_url}')`;
+                rank1El.innerHTML = '';
             }
         }
 
@@ -410,15 +467,10 @@
             element.classList.add('active');
         }
 
-        // Adsgram Integration
+        // Adsgram Setup
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_ADSGRAM_BLOCK_ID" }) : null;
 
         function watchAdsgramAd() {
-            if (adCount >= maxAds) {
-                alert("Daily limit reached! You have completed 15/15 ad entries.");
-                return;
-            }
-
             if (AdController) {
                 AdController.show().then(() => {
                     giveReward();
@@ -426,22 +478,20 @@
                     alert("Ad was not fully completed.");
                 });
             } else {
-                giveReward(); // Local test fallback
+                giveReward(); // Fallback for local testing
             }
         }
 
         function giveReward() {
-            adCount++;
             usdt += 0.0003;
             tickets += 100;
 
-            document.getElementById('limitCounter').innerText = `${adCount} / ${maxAds}`;
             document.getElementById('usdtBalance').innerText = usdt.toFixed(4);
             document.getElementById('walletUsdt').innerText = '$' + usdt.toFixed(4);
             document.getElementById('ticketsBalance').innerText = tickets;
             document.getElementById('rank1Tickets').innerText = tickets + ' 🎟️';
 
-            alert("Reward Granted: +$0.0003 USDT & +100 Tickets! 🎟️");
+            alert("Reward Claimed: +$0.0003 USDT & +100 Tickets! 🎟️");
         }
 
         function copyInviteUrl() {
@@ -452,19 +502,25 @@
         }
 
         function processWithdrawal() {
+            const amount = parseFloat(document.getElementById('withdrawAmountInput').value);
             const wallet = document.getElementById('tonWalletInput').value;
-            if (usdt < 0.01) {
+
+            if (isNaN(amount) || amount < 0.01) {
                 alert("Minimum withdrawal limit is $0.01 USDT");
                 return;
             }
+            if (amount > usdt) {
+                alert("Insufficient balance!");
+                return;
+            }
             if (!wallet) {
-                alert("Please enter a valid TON wallet address.");
+                alert("Please enter your TON wallet address.");
                 return;
             }
 
             tg.sendData(JSON.stringify({
                 action: "withdraw",
-                amount: usdt.toFixed(4),
+                amount: amount,
                 wallet: wallet
             }));
 
