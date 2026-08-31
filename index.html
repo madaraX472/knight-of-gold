@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Knight of Gold</title>
+    <title>Reward WebApp</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -12,456 +13,388 @@
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            -webkit-user-select: none;
-            -webkit-tap-highlight-color: transparent;
-            outline: none;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
         body {
-            background: #0d0f17 url('d9e6f5235474c404892c64ca6e8472e4.jpg?v=2') no-repeat center center fixed;
-            background-size: cover;
+            background-color: #0b0e14;
+            color: #ffffff;
             min-height: 100vh;
-            color: #fff;
-            padding-bottom: 75px;
-            overflow: hidden;
+            padding-bottom: 90px;
         }
 
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(13, 15, 23, 0.65);
-            backdrop-filter: blur(8px);
-            z-index: 1;
-        }
-
-        .app-container {
-            position: relative;
-            z-index: 2;
-            max-width: 430px;
-            margin: 0 auto;
+        .container {
             padding: 15px;
-            height: 100vh;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
-        /* Top Bar Header */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .user-pill {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            padding: 6px 14px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .stats-pills {
-            display: flex;
-            gap: 8px;
-        }
-
-        .stat-pill {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 215, 0, 0.25);
-            padding: 6px 12px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #ffd700;
-        }
-
-        .tournament-card {
-            background: linear-gradient(135deg, rgba(49, 36, 89, 0.85), rgba(21, 16, 43, 0.9));
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            border-radius: 20px;
-            padding: 14px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-
-        .tournament-title { font-size: 14px; font-weight: 800; color: #f1f5f9; }
-        .prize-pool { font-size: 12px; color: #cbd5e1; }
-        .prize-pool span { color: #ffd700; font-weight: 800; }
-
+        /* Tabs logic */
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Main Game Screen */
-        .hero-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 55vh;
-        }
-
-        .hero-character {
-            font-size: 100px;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
-            animation: bounce 2s infinite ease-in-out;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
-
-        .start-btn {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            border: none;
-            color: #fff;
-            padding: 14px 50px;
-            font-size: 18px;
-            font-weight: 800;
-            border-radius: 25px;
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
-            cursor: pointer;
-        }
-
-        /* Leaderboard */
-        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; }
-        .leaderboard-item {
-            background: rgba(30, 27, 55, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        /* Card styles */
+        .card {
+            background: #151c28;
+            border: 1px solid #222e3e;
             border-radius: 16px;
-            padding: 10px 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .task-card {
             display: flex;
             align-items: center;
             justify-content: space-between;
         }
 
-        .leaderboard-item.user-card {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.25), rgba(30, 27, 55, 0.9));
-            border: 1.5px solid #f59e0b;
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .rank-info { display: flex; align-items: center; gap: 10px; }
-        .rank-num { font-weight: 900; font-size: 14px; width: 30px; color: #94a3b8; }
-        .player-avatar { width: 35px; height: 35px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; }
-        .player-name { font-size: 13px; font-weight: 700; }
-        .reward-amount { font-weight: 800; font-size: 13px; color: #ffd700; }
+        .adsgram-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #0088cc, #005588);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: #fff;
+        }
 
-        /* Canvas Game Container */
-        #gameCanvasContainer {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: #0d0f17 url('d9e6f5235474c404892c64ca6e8472e4.jpg?v=2') no-repeat center center fixed;
+        .btn-blue {
+            background: #0088cc;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Leaderboard UI */
+        .podium {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .podium-item {
+            background: #151c28;
+            border: 1px solid #222e3e;
+            border-radius: 12px;
+            padding: 10px;
+            text-align: center;
+            width: 30%;
+        }
+
+        .podium-item.first { border-color: #ffd700; transform: scale(1.05); }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #222e3e;
+            margin: 0 auto 8px auto;
             background-size: cover;
-            z-index: 200;
+            background-position: center;
         }
 
-        canvas { display: block; margin: 0 auto; }
+        .limit-badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #aaa;
+        }
 
-        /* Bottom Nav */
+        /* Profile & Withdrawal */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 10px auto;
+            border: 2px solid #0088cc;
+            background-size: cover;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            background: #0b0e14;
+            border: 1px solid #222e3e;
+            border-radius: 10px;
+            color: #fff;
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+
+        /* Floating Bottom Navigation */
         .bottom-nav {
             position: fixed;
-            bottom: 0; left: 0; right: 0;
-            height: 65px;
-            background: rgba(13, 17, 23, 0.92);
-            backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 92%;
+            max-width: 440px;
+            background: rgba(21, 28, 40, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid #222e3e;
+            border-radius: 35px;
             display: flex;
             justify-content: space-around;
-            align-items: center;
-            z-index: 100;
+            padding: 8px 5px;
+            z-index: 1000;
         }
 
-        .nav-btn {
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #64748b;
+            color: #7a8b9e;
+            background: none;
+            border: none;
             font-size: 11px;
-            font-weight: 600;
+            width: 20%;
             cursor: pointer;
-            background: none; border: none; width: 20%;
         }
 
-        .nav-btn.active { color: #f59e0b; }
+        .nav-item i {
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        .nav-item.active {
+            color: #0088cc;
+        }
+
+        .center-btn {
+            background: #1e293b;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            margin-top: -15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #0088cc;
+            color: #0088cc;
+        }
     </style>
 </head>
 <body>
 
-    <div class="overlay"></div>
-
-    <div class="app-container">
-        <!-- Top Header -->
-        <div class="top-bar">
-            <div class="user-pill">
-                <span>🛡️</span>
-                <span id="username">Warrior</span>
-            </div>
-            <div class="stats-pills">
-                <div class="stat-pill">
-                    🪙 <span id="coinCount">113</span>
+    <div class="container">
+        
+        <!-- Tab 1: Tasks / Ads -->
+        <div id="tasksTab" class="tab-content active">
+            <h3 style="margin-bottom: 15px;">شبكات الإعلانات</h3>
+            <div class="card task-card">
+                <div class="task-info">
+                    <div class="adsgram-icon">A</div>
+                    <div>
+                        <div style="font-weight: bold;">Adsgram</div>
+                        <div style="font-size: 12px; color: #4ba3e3;">مشاهدة الإعلان</div>
+                        <div style="font-size: 11px; color: #aaa;">+$0.0003 | +100 تذكرة</div>
+                    </div>
                 </div>
-                <div class="stat-pill" style="color: #f59e0b;">
-                    🎟️ <span id="ticketCount">35</span>
+                <button class="btn-blue" onclick="showAdsgramAd()">مشاهدة</button>
+            </div>
+            <div style="text-align: center; margin-top: 10px;">
+                <span class="limit-badge">حد المشاركة في المسابقة: <span id="adCount">0</span> / 15</span>
+            </div>
+        </div>
+
+        <!-- Tab 2: Referral -->
+        <div id="friendsTab" class="tab-content">
+            <div class="card" style="text-align: center;">
+                <h3>دعوة الأصدقاء</h3>
+                <p style="font-size: 13px; color: #aaa; margin: 10px 0;">احصل على تذاكر إضافية عند دعوة أصدقائك لاستخدام التطبيق.</p>
+                <input type="text" id="refLink" class="input-box" readonly value="جاري التحميل...">
+                <button class="btn-blue" style="width: 100%;" onclick="copyRef()">نسخ رابط الدعوة</button>
+            </div>
+        </div>
+
+        <!-- Tab 3: Contest / Main -->
+        <div id="mainTab" class="tab-content">
+            <div class="card" style="text-align: center;">
+                <h2>المسابقة الحالية</h2>
+                <p style="color: #aaa; margin-top: 5px;">شاهد الإعلانات لتجميع التذاكر ودخول السحب.</p>
+                <div style="font-size: 24px; font-weight: bold; color: #0088cc; margin: 15px 0;">
+                    التذاكر: <span id="ticketCount">0</span>
                 </div>
             </div>
         </div>
 
-        <div class="tournament-card">
-            <div class="tournament-title">Gold Warrior Tournament ⚔️</div>
-            <div class="prize-pool">Prize Pool: <span>4,000,000 $GW</span></div>
-        </div>
-
-        <!-- TAB 1: GAME SCREEN -->
-        <div id="gameTab" class="tab-content active">
-            <div class="hero-section">
-                <div class="hero-character">🥷</div>
-                <button class="start-btn" onclick="launchGame()">Start 🎟️</button>
-            </div>
-        </div>
-
-        <!-- TAB 2: LEADERBOARD -->
+        <!-- Tab 4: Leaderboard -->
         <div id="leaderboardTab" class="tab-content">
-            <div class="leaderboard-item user-card">
-                <div class="rank-info">
-                    <span class="rank-num" style="color:#f59e0b;">#105</span>
-                    <div class="player-avatar" style="background:#f59e0b;">🥷</div>
-                    <span class="player-name" id="userRankName">Warrior (You)</span>
+            <h3 style="text-align: center;">لوحة التصنيف</h3>
+            <div class="podium">
+                <div class="podium-item">
+                    <div class="avatar" id="top2Img"></div>
+                    <div style="font-size: 12px;" id="top2Name">المركز 2</div>
                 </div>
-                <div><span class="reward-amount" id="userRankCoins">113 🪙</span></div>
-            </div>
-            <div class="leaderboard-list">
-                <div class="leaderboard-item">
-                    <div class="rank-info">
-                        <span class="rank-num" style="color:#ffd700;">#1</span>
-                        <div class="player-avatar" style="background:#f59e0b;">👑</div>
-                        <span class="player-name">Kinzar</span>
-                    </div>
-                    <span class="reward-amount">500,000 🪙</span>
+                <div class="podium-item first">
+                    <div class="avatar" id="top1Img"></div>
+                    <div style="font-size: 12px; font-weight: bold;" id="top1Name">المركز 1</div>
                 </div>
-                <div class="leaderboard-item">
-                    <div class="rank-info">
-                        <span class="rank-num" style="color:#e2e8f0;">#2</span>
-                        <div class="player-avatar" style="background:#64748b;">⚔️</div>
-                        <span class="player-name">Teteshka</span>
-                    </div>
-                    <span class="reward-amount">360,000 🪙</span>
+                <div class="podium-item">
+                    <div class="avatar" id="top3Img"></div>
+                    <div style="font-size: 12px;" id="top3Name">المركز 3</div>
                 </div>
             </div>
         </div>
 
-        <!-- PLACEHOLDERS -->
-        <div id="shopTab" class="tab-content" style="text-align: center; padding: 40px 0;"><h3>Shop 🛍️</h3></div>
-        <div id="earnTab" class="tab-content" style="text-align: center; padding: 40px 0;"><h3>Earn Ads 📺</h3></div>
-        <div id="walletTab" class="tab-content" style="text-align: center; padding: 40px 0;"><h3>Wallet 💼</h3></div>
+        <!-- Tab 5: Profile & Withdrawal -->
+        <div id="profileTab" class="tab-content">
+            <div class="profile-header">
+                <div class="profile-avatar" id="userPhoto"></div>
+                <h3 id="userName">المستخدم</h3>
+                <p style="font-size: 12px; color: #aaa;" id="userId">ID: --</p>
+            </div>
+
+            <div class="card">
+                <div style="font-size: 13px; color: #aaa;">الرصيد المتاح للسحب</div>
+                <div style="font-size: 22px; font-weight: bold; color: #10b981;" id="userBalance">$0.0000</div>
+                
+                <hr style="border-color: #222e3e; margin: 15px 0;">
+                
+                <h4>سحب الرصيد (TON)</h4>
+                <p style="font-size: 11px; color: #aaa; margin-bottom: 10px;">الحد الأدنى للسحب هو $0.01</p>
+                
+                <label style="font-size: 12px;">عنوان محفظة TON:</label>
+                <input type="text" id="walletAddress" class="input-box" placeholder="أدخل عنوان المحفظة هنا">
+                
+                <button class="btn-blue" style="width: 100%; background: #10b981;" onclick="submitWithdrawal()">طلب السحب</button>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Canvas Canvas Area -->
-    <div id="gameCanvasContainer">
-        <canvas id="gameCanvas"></canvas>
-    </div>
-
-    <!-- Bottom Nav -->
+    <!-- Navigation Bar -->
     <div class="bottom-nav">
-        <button class="nav-btn active" onclick="switchTab('gameTab', this)"><i class="fa-solid fa-gamepad"></i><span>Game</span></button>
-        <button class="nav-btn" onclick="switchTab('shopTab', this)"><i class="fa-solid fa-store"></i><span>Shop</span></button>
-        <button class="nav-btn" onclick="switchTab('leaderboardTab', this)"><i class="fa-solid fa-trophy"></i><span>Leaderboard</span></button>
-        <button class="nav-btn" onclick="switchTab('earnTab', this)"><i class="fa-solid fa-sack-dollar"></i><span>Earn</span></button>
-        <button class="nav-btn" onclick="switchTab('walletTab', this)"><i class="fa-solid fa-wallet"></i><span>Wallet</span></button>
+        <button class="nav-item active" onclick="switchTab('tasksTab', this)">
+            <i class="fa-solid fa-list-check"></i>
+            <span>المهام</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('friendsTab', this)">
+            <i class="fa-solid fa-user-group"></i>
+            <span>الأصدقاء</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('mainTab', this)">
+            <div class="center-btn"><i class="fa-solid fa-play"></i></div>
+        </button>
+        <button class="nav-item" onclick="switchTab('leaderboardTab', this)">
+            <i class="fa-solid fa-trophy"></i>
+            <span>التصنيف</span>
+        </button>
+        <button class="nav-item" onclick="switchTab('profileTab', this)">
+            <i class="fa-solid fa-user"></i>
+            <span>الحساب</span>
+        </button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
+        const tg = window.Telegram.WebApp;
         tg.expand();
 
-        let coins = 113;
-        let tickets = 35;
+        let balance = 0.0000;
+        let tickets = 0;
+        let adViews = 0;
+        const maxAdViews = 15;
 
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            let name = tg.initDataUnsafe.user.first_name;
-            document.getElementById('username').innerText = name;
-            document.getElementById('userRankName').innerText = name + " (You)";
+        // Load Telegram User Data
+        const user = tg.initDataUnsafe?.user;
+        if (user) {
+            document.getElementById('userName').innerText = user.first_name + (user.last_name ? ' ' + user.last_name : '');
+            document.getElementById('userId').innerText = 'ID: ' + user.id;
+            document.getElementById('refLink').value = `https://t.me/YourBotName?start=ref_${user.id}`;
+            
+            if (user.photo_url) {
+                document.getElementById('userPhoto').style.backgroundImage = `url('${user.photo_url}')`;
+            }
         }
 
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
-            element.classList.add('active');
+            btn.classList.add('active');
         }
 
-        /* --- Canvas Game Logic --- */
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        let gameLoop;
-        let player, platforms, coinsList, monsters, boosters;
-        let score = 0, collectedCoins = 0;
+        // Adsgram Ad Handler
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "YOUR_ADSGRAM_BLOCK_ID" }) : null;
 
-        function launchGame() {
-            if (tickets <= 0) { alert("No tickets remaining!"); return; }
-            tickets--;
+        function showAdsgramAd() {
+            if (adViews >= maxAdViews) {
+                alert("لقد وصلت للحد الأقصى للمشاركات اليوم (15 إعلان).");
+                return;
+            }
+
+            if (AdController) {
+                AdController.show().then(() => {
+                    processAdReward();
+                }).catch((err) => {
+                    alert("لم يتم اكتمال مشاهدة الإعلان.");
+                });
+            } else {
+                // For local testing
+                processAdReward();
+            }
+        }
+
+        function processAdReward() {
+            adViews++;
+            balance += 0.0003;
+            tickets += 100;
+            
+            document.getElementById('adCount').innerText = adViews;
+            document.getElementById('userBalance').innerText = '$' + balance.toFixed(4);
             document.getElementById('ticketCount').innerText = tickets;
+            
+            alert("تم إحراز المكافأة: +$0.0003 و +100 تذكرة!");
+        }
 
-            document.getElementById('gameCanvasContainer').style.display = 'block';
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+        function copyRef() {
+            const copyText = document.getElementById("refLink");
+            copyText.select();
+            document.execCommand("copy");
+            alert("تم نسخ رابط الدعوة!");
+        }
 
-            player = {
-                x: canvas.width / 2 - 20,
-                y: canvas.height - 150,
-                width: 40,
-                height: 40,
-                vy: -12,
-                vx: 0,
-                shield: false,
-                boostTimer: 0
-            };
-
-            platforms = [
-                { x: canvas.width / 2 - 50, y: canvas.height - 50, width: 100, height: 15 }
-            ];
-            for(let i = 0; i < 7; i++) {
-                platforms.push({
-                    x: Math.random() * (canvas.width - 80),
-                    y: canvas.height - 120 - (i * 90),
-                    width: 80,
-                    height: 15
-                });
+        function submitWithdrawal() {
+            const wallet = document.getElementById('walletAddress').value;
+            if (balance < 0.01) {
+                alert("الحد الأدنى للسحب هو $0.01");
+                return;
+            }
+            if (!wallet) {
+                alert("يرجى إدخال عنوان المحفظة.");
+                return;
             }
 
-            coinsList = [];
-            monsters = [];
-            boosters = [];
-            score = 0;
-            collectedCoins = 0;
-
-            window.addEventListener('deviceorientation', handleMotion);
-            window.addEventListener('touchmove', handleTouch);
-
-            updateGame();
-        }
-
-        function handleTouch(e) {
-            let touchX = e.touches[0].clientX;
-            if (touchX < canvas.width / 2) player.vx = -5;
-            else player.vx = 5;
-        }
-
-        function handleMotion(e) {
-            if (e.gamma) player.vx = e.gamma * 0.3;
-        }
-
-        function updateGame() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Physics
-            player.vy += 0.4;
-            player.x += player.vx;
-            player.y += player.vy;
-
-            // Screen edges
-            if (player.x < 0) player.x = canvas.width;
-            if (player.x > canvas.width) player.x = 0;
-
-            // Camera movement
-            if (player.y < canvas.height / 2) {
-                let diff = canvas.height / 2 - player.y;
-                player.y = canvas.height / 2;
-                score += Math.floor(diff);
-
-                platforms.forEach(p => {
-                    p.y += diff;
-                    if (p.y > canvas.height) {
-                        p.y = 0;
-                        p.x = Math.random() * (canvas.width - 80);
-                        // Spawn coins or monsters
-                        if (Math.random() < 0.4) coinsList.push({ x: p.x + 30, y: p.y - 25, collected: false });
-                        if (Math.random() < 0.15) monsters.push({ x: p.x + 20, y: p.y - 30, alive: true });
-                        if (Math.random() < 0.08) boosters.push({ x: p.x + 25, y: p.y - 30, type: '🚀' });
-                    }
-                });
-
-                coinsList.forEach(c => c.y += diff);
-                monsters.forEach(m => m.y += diff);
-                boosters.forEach(b => b.y += diff);
-            }
-
-            // Platform collision
-            platforms.forEach(p => {
-                if (player.vy > 0 && player.x + player.width > p.x && player.x < p.x + p.width &&
-                    player.y + player.height >= p.y && player.y + player.height <= p.y + 15) {
-                    player.vy = -12;
-                }
-                // Draw platform
-                ctx.fillStyle = '#f59e0b';
-                ctx.fillRect(p.x, p.y, p.width, p.height);
-            });
-
-            // Draw & Collect Coins
-            coinsList.forEach(c => {
-                if (!c.collected) {
-                    ctx.font = '20px Arial';
-                    ctx.fillText('🪙', c.x, c.y);
-                    if (Math.hypot(player.x - c.x, player.y - c.y) < 30) {
-                        c.collected = true;
-                        collectedCoins++;
-                    }
-                }
-            });
-
-            // Monsters
-            monsters.forEach(m => {
-                if (m.alive) {
-                    ctx.font = '24px Arial';
-                    ctx.fillText('👾', m.x, m.y);
-                    if (Math.hypot(player.x - m.x, player.y - m.y) < 25) {
-                        if (player.vy > 0) { m.alive = false; player.vy = -12; }
-                        else gameOver();
-                    }
-                }
-            });
-
-            // Boosters
-            boosters.forEach(b => {
-                ctx.font = '22px Arial';
-                ctx.fillText(b.type, b.x, b.y);
-                if (Math.hypot(player.x - b.x, player.y - b.y) < 25) {
-                    player.vy = -22; // Rocket Boost
-                }
-            });
-
-            // Draw Player
-            ctx.font = '36px Arial';
-            ctx.fillText('🥷', player.x, player.y + player.height);
-
-            // Draw HUD
-            ctx.fillStyle = '#fff';
-            ctx.font = 'bold 16px Arial';
-            ctx.fillText(`Score: ${score}`, 20, 40);
-            ctx.fillText(`🪙 ${collectedCoins}`, canvas.width - 80, 40);
-
-            // Check Defeat
-            if (player.y > canvas.height) gameOver();
-            else gameLoop = requestAnimationFrame(updateGame);
-        }
-
-        function gameOver() {
-            cancelAnimationFrame(gameLoop);
-            coins += collectedCoins;
-            document.getElementById('coinCount').innerText = coins;
-            document.getElementById('userRankCoins').innerText = coins + ' 🪙';
-            alert(`Game Over! Score: ${score} | Coins: +${collectedCoins}`);
-            document.getElementById('gameCanvasContainer').style.display = 'none';
+            // Send withdrawal payload back to Telegram Bot
+            tg.sendData(JSON.stringify({
+                action: "withdraw",
+                amount: balance.toFixed(4),
+                wallet: wallet,
+                user_id: user?.id,
+                username: user?.username || user?.first_name
+            }));
+            
+            alert("تم تقديم طلب السحب بنجاح!");
         }
     </script>
 </body>
