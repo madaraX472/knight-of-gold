@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Earn Money</title>
+    <title>Earn Money - Knight of Gold</title>
     <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Adsgram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+
     <style>
         * {
             box-sizing: border-box;
@@ -15,10 +16,12 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent; /* حدف المربع الأزرق عند الضغط */
         }
 
         body {
-            background-color: #0d1117;
+            background-color: #0b0e14;
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -31,110 +34,141 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            background: rgba(13, 17, 23, 0.85);
-            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            background: rgba(11, 14, 20, 0.85);
+            backdrop-filter: blur(12px);
             position: fixed;
             top: 0;
             width: 100%;
             z-index: 100;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
         }
 
         .user-badge {
             display: flex;
             align-items: center;
-            background: #161b22;
-            padding: 6px 12px;
+            gap: 8px;
+            background: rgba(22, 27, 34, 0.8);
+            padding: 6px 14px;
             border-radius: 20px;
-            border: 1px solid #30363d;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .user-badge span {
-            color: #ffc107;
-            margin-right: 5px;
-        }
-
-        .stats-badge {
-            display: flex;
-            gap: 10px;
-        }
-
-        .stat-item {
-            background: #161b22;
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid #30363d;
+            border: 1px solid rgba(255, 193, 7, 0.3);
             font-size: 13px;
+            font-weight: 600;
+        }
+
+        .user-badge img {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+        }
+
+        .stats-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .stat-box {
+            background: rgba(255, 193, 7, 0.1);
+            border: 1px solid rgba(255, 193, 7, 0.3);
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 12px;
             font-weight: bold;
             color: #ffc107;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
-        .stat-item.tickets {
-            color: #e3b341;
-        }
-
-        /* Main Content Container with Hero Background Image */
+        /* Main Content Container with Background Image */
         .content {
             flex: 1;
-            margin-top: 60px;
-            margin-bottom: 70px;
+            margin-top: 55px;
+            margin-bottom: 65px;
             overflow-y: auto;
-            padding: 20px;
-            /* صورة الخلفية الفنية الطبيعية */
-            background: linear-gradient(180deg, rgba(13, 17, 23, 0.4) 0%, rgba(13, 17, 23, 0.95) 100%), 
-                        url('https://raw.githubusercontent.com/madarax472/knight-of-gold/main/bg.jpg') center/cover no-repeat;
+            padding: 16px;
+            background: linear-gradient(180deg, rgba(11, 14, 20, 0.4) 0%, rgba(11, 14, 20, 0.95) 100%), 
+                        url('https://raw.githubusercontent.com/madaraX472/knight-of-gold/main/d9e6f5235474c404892c64ca6e8472e4.jpg') center/cover no-repeat;
             background-blend-mode: overlay;
         }
 
-        .section-title {
-            font-size: 16px;
-            color: #8b949e;
-            margin-bottom: 12px;
-            font-weight: 600;
+        /* Glowing Action Buttons Grid (Top of Main Page) */
+        .top-actions-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        /* Ad Card Styling */
+        .action-card-btn {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(255, 152, 0, 0.2), rgba(255, 193, 7, 0.1));
+            border: 1px solid #ff9800;
+            border-radius: 14px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #fff;
+            font-weight: bold;
+            font-size: 13px;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(255, 152, 0, 0.25);
+            transition: all 0.2s ease;
+        }
+
+        .action-card-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.8);
+        }
+
+        /* Ad Cards (Fantasy Orange/Yellow Glow) */
+        .section-title {
+            font-size: 15px;
+            color: #ffc107;
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(255, 193, 7, 0.4);
+        }
+
         .ad-card {
-            background: rgba(22, 27, 34, 0.9);
+            background: rgba(18, 22, 30, 0.85);
             border-radius: 16px;
-            padding: 16px;
+            padding: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            backdrop-filter: blur(8px);
+            margin-bottom: 14px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .ad-info {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
         }
 
         .ad-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #ff9800, #ed6c02);
-            border-radius: 14px;
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #ff9800, #ffc107);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            box-shadow: 0 4px 12px rgba(237, 108, 2, 0.4);
+            font-size: 20px;
+            box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            color: #000;
+            font-weight: bold;
         }
 
         .ad-details h4 {
-            font-size: 16px;
+            font-size: 14px;
+            color: #ffffff;
             margin-bottom: 4px;
-        }
-
-        .ad-details p {
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 6px;
         }
 
         .reward-tag {
@@ -143,45 +177,134 @@
             background: rgba(255, 193, 7, 0.15);
             color: #ffc107;
             font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 8px;
+            padding: 2px 6px;
+            border-radius: 6px;
             font-weight: bold;
+            border: 1px solid rgba(255, 193, 7, 0.3);
         }
 
+        /* Glow Watch Button */
         .watch-btn {
             background: linear-gradient(135deg, #ff9800, #ed6c02);
             color: #ffffff;
             border: none;
-            padding: 10px 22px;
+            padding: 9px 18px;
             border-radius: 20px;
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(237, 108, 2, 0.4);
-            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 0 12px rgba(237, 108, 2, 0.6);
+            transition: all 0.2s ease;
         }
 
         .watch-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.94);
+            box-shadow: 0 0 22px #ffc107;
         }
 
-        /* Views Pages */
+        .watch-btn:disabled {
+            background: #484f58;
+            box-shadow: none;
+            cursor: not-allowed;
+            color: #8b949e;
+        }
+
+        /* Leaderboard Page */
+        .hero-banner {
+            text-align: center;
+            padding: 16px;
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 152, 0, 0.3);
+            margin-bottom: 16px;
+        }
+
+        .hero-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffc107;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
+            margin-bottom: 8px;
+        }
+
+        .timer-box {
+            font-size: 13px;
+            color: #fff;
+            background: rgba(0,0,0,0.5);
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 10px;
+            border: 1px solid #ff9800;
+            font-weight: bold;
+        }
+
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .leader-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(22, 27, 34, 0.8);
+            padding: 10px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .leader-item.user-highlight {
+            border: 1px solid #ffc107;
+            background: rgba(255, 193, 7, 0.15);
+            box-shadow: 0 0 10px rgba(255, 193, 7, 0.3);
+        }
+
+        .leader-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rank-badge {
+            width: 24px;
+            font-weight: bold;
+            color: #ffc107;
+            font-size: 14px;
+        }
+
+        .leader-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 1px solid #ff9800;
+        }
+
+        .prize-tag {
+            color: #4caf50;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        /* Tabs Logic */
         .tab-page {
             display: none;
         }
-
         .tab-page.active {
             display: block;
         }
 
-        /* Bottom Navigation Bar */
+        /* Navbar Bottom */
         .navbar {
             position: fixed;
             bottom: 0;
             width: 100%;
-            height: 65px;
-            background: #161b22;
-            border-top: 1px solid #30363d;
+            height: 60px;
+            background: rgba(16, 20, 27, 0.95);
+            border-top: 1px solid rgba(255, 193, 7, 0.2);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -194,18 +317,20 @@
             align-items: center;
             color: #8b949e;
             font-size: 11px;
-            text-decoration: none;
+            font-weight: 600;
             cursor: pointer;
             gap: 4px;
+            transition: all 0.2s;
         }
 
         .nav-item.active {
             color: #ffc107;
+            text-shadow: 0 0 8px rgba(255, 193, 7, 0.5);
         }
 
         .nav-item svg {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             fill: currentColor;
         }
     </style>
@@ -215,66 +340,92 @@
     <!-- Header -->
     <div class="header">
         <div class="user-badge">
-            <span>👑</span> <span id="username">User</span>
+            <img id="user-avatar" src="https://telegram.org/img/t_logo.png" alt="Avatar">
+            <span id="username">Player</span>
         </div>
-        <div class="stats-badge">
-            <div class="stat-item">$ <span id="usdt-balance">0.0000</span></div>
-            <div class="stat-item tickets">🎫 <span id="ticket-balance">0</span></div>
+        <div class="stats-container">
+            <div class="stat-box">$ <span id="usdt-balance">0.0000</span></div>
+            <div class="stat-box">🎫 <span id="ticket-balance">0</span></div>
         </div>
     </div>
 
-    <!-- Content Tabs -->
+    <!-- Content Views -->
     <div class="content">
-        <!-- Earn Tab -->
+
+        <!-- 1. EARN PAGE -->
         <div id="tab-earn" class="tab-page active">
-            <div class="section-title">Ad Networks</div>
+            <!-- Top Buttons (Referral Right | Promo Code Left) -->
+            <div class="top-actions-grid">
+                <button class="action-card-btn" onclick="openPromoCodeModal()">
+                    🏷️ Promo Code
+                </button>
+                <button class="action-card-btn" onclick="copyReferralLink()">
+                    🔗 Invite Link
+                </button>
+            </div>
+
+            <div class="section-title">✨ Sponsored Ads</div>
+
+            <!-- Adsgram Card -->
             <div class="ad-card">
                 <div class="ad-info">
                     <div class="ad-icon">▶</div>
                     <div class="ad-details">
-                        <h4>Adsgram</h4>
-                        <p>Watch Video Ad</p>
-                        <div class="reward-tag">🎫 +100 Tickets | +$0.0003</div>
+                        <h4>Adsgram Video</h4>
+                        <div class="reward-tag">+$0.0004 | 🎫 100</div>
                     </div>
                 </div>
-                <button class="watch-btn" onclick="showAd()">Watch</button>
+                <button id="adsgram-btn" class="watch-btn" onclick="watchAdsgram()">Watch</button>
+            </div>
+
+            <!-- Adsterra Card -->
+            <div class="ad-card">
+                <div class="ad-info">
+                    <div class="ad-icon">🌐</div>
+                    <div class="ad-details">
+                        <h4>Adsterra Web Task</h4>
+                        <div class="reward-tag">+$0.0003 | 🎫 80</div>
+                    </div>
+                </div>
+                <button id="adsterra-btn" class="watch-btn" onclick="watchAdsterra()">Watch</button>
             </div>
         </div>
 
-        <!-- Friends Tab -->
-        <div id="tab-friends" class="tab-page">
-            <div class="section-title">Invite Friends</div>
-            <p style="color:#8b949e; font-size:14px; line-height:1.5;">
-                Invite your friends and earn <b>+$0.02 USDT</b> after your friend watches 10 ads!
-            </p>
-        </div>
-
-        <!-- Leaderboard Tab -->
+        <!-- 2. LEADERBOARD (CONTEST) PAGE -->
         <div id="tab-leaderboard" class="tab-page">
-            <div class="section-title">Weekly Leaderboard</div>
-            <p style="color:#8b949e; font-size:14px;">Top users will compete for weekly prizes!</p>
+            <div class="hero-banner">
+                <div class="hero-title">COLLECT TICKETS & COMPETE FOR THE TOP TO WIN USDT!</div>
+                <div class="timer-box">Ends in: <span id="contest-timer">10d 00h 00m 00s</span></div>
+            </div>
+
+            <div class="section-title">🏆 Top 10 Champions</div>
+            <div class="leaderboard-list" id="leaderboard-container">
+                <!-- Dynamically generated list -->
+            </div>
         </div>
 
-        <!-- Profile Tab -->
+        <!-- 3. PROFILE PAGE -->
         <div id="tab-profile" class="tab-page">
-            <div class="section-title">My Profile</div>
-            <p style="color:#8b949e; font-size:14px;">Manage your settings & wallet here.</p>
+            <div class="section-title">👤 Player Statistics</div>
+            <div class="ad-card" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                <p><b>User Name:</b> <span id="profile-name">User</span></p>
+                <p><b>Total USDT Earned:</b> $<span id="profile-usdt">0.0000</span></p>
+                <p><b>Total Tickets:</b> 🎫 <span id="profile-tickets">0</span></p>
+                <button class="watch-btn" style="width: 100%; margin-top: 10px;" onclick="copyReferralLink()">Copy My Invite Link</button>
+            </div>
         </div>
+
     </div>
 
-    <!-- Navigation -->
+    <!-- Navigation Bar (3 Tabs) -->
     <div class="navbar">
         <div class="nav-item active" onclick="switchTab('earn', this)">
             <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
             <span>Earn</span>
         </div>
-        <div class="nav-item" onclick="switchTab('friends', this)">
-            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-            <span>Friends</span>
-        </div>
         <div class="nav-item" onclick="switchTab('leaderboard', this)">
             <svg viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg>
-            <span>Leaderboard</span>
+            <span>Contest</span>
         </div>
         <div class="nav-item" onclick="switchTab('profile', this)">
             <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -286,40 +437,215 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // إتاحة اسم المستخدم تلقائياً
+        // Load & Save State Engine (LocalStorage)
+        let userData = JSON.parse(localStorage.getItem('knight_user_data')) || {
+            usdt: 0.0000,
+            tickets: 0,
+            name: "Player",
+            photo: "https://telegram.org/img/t_logo.png"
+        };
+
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name || 'User';
-        }
-
-        // إعداد الإعلانات من Adsgram كود: 45406
-        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "45406" }) : null;
-
-        let tickets = 0;
-        let usdt = 0.0000;
-
-        function showAd() {
-            if (AdController) {
-                AdController.show().then((result) => {
-                    // عند اكتمال مشاهدة الإعلان
-                    tickets += 100;
-                    usdt += 0.0003;
-                    updateUI();
-
-                    // إرسال البيانات للبوت في Termux لتحديث الإحالات والأرصدة
-                    tg.sendData(JSON.stringify({ action: "ad_watched" }));
-                }).catch((result) => {
-                    alert("Ad was skipped or failed to load.");
-                });
-            } else {
-                alert("Adsgram SDK is loading... Please try again.");
+            userData.name = tg.initDataUnsafe.user.first_name || "Player";
+            if (tg.initDataUnsafe.user.photo_url) {
+                userData.photo = tg.initDataUnsafe.user.photo_url;
             }
         }
 
-        function updateUI() {
-            document.getElementById('ticket-balance').innerText = tickets;
-            document.getElementById('usdt-balance').innerText = usdt.toFixed(4);
+        function saveData() {
+            localStorage.setItem('knight_user_data', JSON.stringify(userData));
+            updateUI();
         }
 
+        function updateUI() {
+            document.getElementById('username').innerText = userData.name;
+            document.getElementById('profile-name').innerText = userData.name;
+            document.getElementById('user-avatar').src = userData.photo;
+            
+            document.getElementById('usdt-balance').innerText = userData.usdt.toFixed(4);
+            document.getElementById('profile-usdt').innerText = userData.usdt.toFixed(4);
+            
+            document.getElementById('ticket-balance').innerText = userData.tickets;
+            document.getElementById('profile-tickets').innerText = userData.tickets;
+            
+            renderLeaderboard();
+        }
+
+        // Adsgram Setup (ID: 45406)
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "45406" }) : null;
+
+        function watchAdsgram() {
+            const btn = document.getElementById('adsgram-btn');
+            if (!AdController) {
+                alert("Sorry, try again later.");
+                return;
+            }
+
+            AdController.show().then((result) => {
+                userData.usdt += 0.0004;
+                userData.tickets += 100;
+                saveData();
+                startCooldown(btn, 10);
+            }).catch((err) => {
+                alert("Sorry, try again later.");
+            });
+        }
+
+        // Adsterra Mandatory 10-Second Timer Task
+        let adsterraActive = false;
+        let adsterraStartTime = 0;
+        let adsterraTimerInterval = null;
+
+        function watchAdsterra() {
+            const btn = document.getElementById('adsterra-btn');
+            const adUrl = "https://www.profitableratecpmnetwork.com/jbniegah7?key=c25a066401baecd24398a891da71814d";
+            
+            adsterraStartTime = Date.now();
+            adsterraActive = true;
+            btn.disabled = true;
+            btn.innerText = "Watching...";
+
+            window.open(adUrl, '_blank');
+
+            adsterraTimerInterval = setInterval(() => {
+                let elapsed = Math.floor((Date.now() - adsterraStartTime) / 1000);
+                if (elapsed >= 10) {
+                    clearInterval(adsterraTimerInterval);
+                    if (adsterraActive) {
+                        userData.usdt += 0.0003;
+                        userData.tickets += 80;
+                        saveData();
+                        alert("Task completed! +$0.0003 & 80 Tickets added.");
+                        adsterraActive = false;
+                        startCooldown(btn, 10);
+                    }
+                }
+            }, 500);
+        }
+
+        // Check if user left the page early
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && adsterraActive) {
+                // User navigated back or left
+            } else if (!document.hidden && adsterraActive) {
+                let elapsed = Math.floor((Date.now() - adsterraStartTime) / 1000);
+                if (elapsed < 10) {
+                    clearInterval(adsterraTimerInterval);
+                    adsterraActive = false;
+                    const btn = document.getElementById('adsterra-btn');
+                    btn.disabled = false;
+                    btn.innerText = "Watch";
+                    alert("Please stay on the page for 10 seconds to get your reward!");
+                }
+            }
+        });
+
+        // Cooldown Timer inside button
+        function startCooldown(btn, seconds) {
+            btn.disabled = true;
+            let left = seconds;
+            btn.innerText = `${left}s`;
+
+            const timer = setInterval(() => {
+                left--;
+                if (left <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = "Watch";
+                } else {
+                    btn.innerText = `${left}s`;
+                }
+            }, 1000);
+        }
+
+        // Contest Timer (10 Days Countdown)
+        let contestEndTime = localStorage.getItem('knight_contest_end');
+        if (!contestEndTime) {
+            contestEndTime = Date.now() + (10 * 24 * 60 * 60 * 1000);
+            localStorage.setItem('knight_contest_end', contestEndTime);
+        }
+
+        function updateContestTimer() {
+            const now = Date.now();
+            const diff = contestEndTime - now;
+
+            if (diff <= 0) {
+                document.getElementById('contest-timer').innerText = "ENDED";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('contest-timer').innerText = 
+                `${days}d ${hours < 10 ? '0':''}${hours}h ${minutes < 10 ? '0':''}${minutes}m ${seconds < 10 ? '0':''}${seconds}s`;
+        }
+        setInterval(updateContestTimer, 1000);
+
+        // Render Leaderboard (10 Winners)
+        function renderLeaderboard() {
+            const prizes = ["$2.00", "$1.00", "$0.50", "$0.10", "$0.10", "$0.10", "$0.10", "$0.05", "$0.05", "$0.05"];
+            const container = document.getElementById('leaderboard-container');
+            container.innerHTML = "";
+
+            // Top players list
+            let dummyLeaders = [
+                        { name: userData.name, photo: userData.photo, tickets: userData.tickets, isUser: true },
+                { name: "ShadowKnight", photo: "https://telegram.org/img/t_logo.png", tickets: 2400 },
+                { name: "CryptoKing", photo: "https://telegram.org/img/t_logo.png", tickets: 1850 },
+                { name: "GoldHunter", photo: "https://telegram.org/img/t_logo.png", tickets: 1200 },
+                { name: "Alpha01", photo: "https://telegram.org/img/t_logo.png", tickets: 950 },
+                { name: "ViperX", photo: "https://telegram.org/img/t_logo.png", tickets: 800 },
+                { name: "DragonSlayer", photo: "https://telegram.org/img/t_logo.png", tickets: 650 },
+                { name: "Phoenix", photo: "https://telegram.org/img/t_logo.png", tickets: 500 },
+                { name: "ZeroTwo", photo: "https://telegram.org/img/t_logo.png", tickets: 350 },
+                { name: "Legendary", photo: "https://telegram.org/img/t_logo.png", tickets: 200 }
+            ];
+
+            // Sort dynamically by tickets
+            dummyLeaders.sort((a, b) => b.tickets - a.tickets);
+
+            dummyLeaders.slice(0, 10).forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = `leader-item ${item.isUser ? 'user-highlight' : ''}`;
+                div.innerHTML = `
+                    <div class="leader-info">
+                        <span class="rank-badge">#${index + 1}</span>
+                        <img class="leader-avatar" src="${item.photo}">
+                        <div>
+                            <div style="font-size: 13px; font-weight: bold;">${item.name} ${item.isUser ? '(You)' : ''}</div>
+                            <div style="font-size: 11px; color: #8b949e;">🎫 ${item.tickets} Tickets</div>
+                        </div>
+                    </div>
+                    <span class="prize-tag">${prizes[index]}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Promo Code Modal
+        function openPromoCodeModal() {
+            const code = prompt("Enter Promo Code:");
+            if (code && code.toLowerCase() === "gold2026") {
+                userData.tickets += 200;
+                saveData();
+                alert("Promo Code Applied! +200 Tickets");
+            } else if (code) {
+                alert("Invalid Promo Code!");
+            }
+        }
+
+        // Copy Referral Link
+        function copyReferralLink() {
+            const botUser = tg.initDataUnsafe?.user?.id || "user";
+            const refLink = `https://t.me/Knight_Gold_bot/app?startapp=${botUser}`;
+            navigator.clipboard.writeText(refLink);
+            alert("Referral Link copied to clipboard!");
+        }
+
+        // Tab Switcher
         function switchTab(tabName, element) {
             document.querySelectorAll('.tab-page').forEach(page => page.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
@@ -327,6 +653,10 @@
             document.getElementById('tab-' + tabName).classList.add('active');
             element.classList.add('active');
         }
+
+        // Initialize App
+        updateUI();
+        updateContestTimer();
     </script>
 </body>
 </html>
