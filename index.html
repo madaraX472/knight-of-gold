@@ -446,14 +446,119 @@
                 });
             }
         }
+function copyInviteLink() {
+    const inviteLink = `https://t.me/Knight_Bot?start=${currentUser ? currentUser.telegramId : ''}`;
+    navigator.clipboard.writeText(inviteLink).then(() => {
+        alert("Referral link copied!");
+    }).catch(err => {
+        console.error("Failed to copy link: ", err);
+    });
+}
 
-        function copyInviteLink() {
-            const inviteLink = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
-            navigator.clipboard.writeText(inviteLink);
-            alert("Referral link copied!");
+// Render Real World Leaderboard (No Bot Users)
+function renderGlobalLeaderboard(snapshot) {
+    const container = document.getElementById("leaderboard-container") || document.getElementById("leaderboardList");
+    if (!container) return;
+
+    container.innerHTML = ""; // Clear existing list
+
+    if (!snapshot || snapshot.empty) {
+        container.innerHTML = `<div class="empty-msg">No leaderboard data found.</div>`;
+        return;
+    }
+
+    const leaderboardData = [];
+
+    // Extract documents and filter out bot users
+    snapshot.forEach((doc) => {
+        const userData = doc.data();
+        if (!userData.isBot && !userData.isFake) {
+            leaderboardData.push({
+                id: doc.id,
+                username: userData.username || userData.firstName || "Anonymous",
+                balance: userData.balance || 0,
+                tickets: userData.tickets || 0,
+                avatar: userData.photoUrl || "assets/default-avatar.png"
+            });
         }
+    });
 
-        // Render Real World Leaderboard (No Bot Users)
+    // Sort descending by balance / points
+    leaderboardData.sort((a, b) => b.balance - a.balance);
+
+    // Render top 100 users
+    leaderboardData.slice(0, 100).forEach((user, index) => {
+        const rank = index + 1;
+        const itemElement = document.createElement("div");
+        itemElement.className = `leaderboard-item ${rank <= 3 ? 'top-rank rank-' + rank : ''}`;
+        
+        itemElement.innerHTML = `
+            <div class="rank-number">${getRankBadge(rank)}</div>
+            <div class="user-profile">
+                <img src="${user.avatar}" alt="${user.username}" class="user-avatar" onerror="this.src='assets/default-avatar.png'" />
+                <div class="user-details">
+                    <span class="user-name">${escapeHtml(user.username)}</span>
+                    <span class="user-tickets">${user.tickets} Tickets</span>
+                </div>
+            </div>
+            <div class="user-score">
+                <span class="score-value">${formatNumber(user.balance)}</span>
+            </div>
+        `;
+
+        container.appendChild(itemElement);
+    });
+
+    // Update Current User Position
+    if (typeof currentUser !== 'undefined' && currentUser) {
+        updateMyLeaderboardRank(leaderboardData, currentUser.id || currentUser.telegramId);
+    }
+}
+
+// Helper: Format Rank Badge Icon or Number
+function getRankBadge(rank) {
+    if (rank === 1) return '🥇';
+    if (rank === 2) return '🥈';
+    if (rank === 3) return '🥉';
+    return `#${rank}`;
+}
+
+// Helper: Find & Render Current User Rank
+function updateMyLeaderboardRank(allUsers, currentUserId) {
+    const myRankContainer = document.getElementById("my-rank-container");
+    if (!myRankContainer) return;
+
+    const userIndex = allUsers.findIndex(user => user.id === currentUserId);
+    if (userIndex !== -1) {
+        const myRank = userIndex + 1;
+        const myData = allUsers[userIndex];
+
+        myRankContainer.innerHTML = `
+            <div class="my-rank-card">
+                <span>Your Rank: <strong>${getRankBadge(myRank)}</strong></span>
+                <span>Balance: <strong>${formatNumber(myData.balance)}</strong></span>
+            </div>
+        `;
+    } else {
+        myRankContainer.innerHTML = `
+            <div class="my-rank-card">
+                <span>Your Rank: <strong>Unranked</strong></span>
+            </div>
+        `;
+    }
+}
+
+// Helper: Format Big Numbers (e.g. 1,000,000)
+function formatNumber(num) {
+    return new Intl.NumberFormat('en-US').format(num || 0);
+}
+
+// Helper: Escape HTML to prevent XSS
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerText = text;
+    return div.in();
+});
         function renderGlobalLeaderboard(snapshot) {
             const container = document.getElementById('leaderboardContainer');
             container.innerHTML = "";
