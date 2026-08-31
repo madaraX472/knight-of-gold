@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فارس الذهب - Knight of Gold</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('d9e6f5235474c404892c6...') no-repeat center center fixed;
+            background-size: cover;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px 25px;
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            margin-top: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .score-container {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffd700;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .clicker-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        /* تصميم العملة الذهبية بواسطة الكود */
+        .gold-coin {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ffe066 0%, #f5af19 50%, #e65c00 100%);
+            border: 8px solid #ffd700;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.8), inset 0 0 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 70px;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .gold-coin:active {
+            transform: scale(0.92);
+        }
+
+        .footer {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #f5af19, #e65c00);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>فارس الذهب</h1>
+        <div class="score-container">
+            النقاط: <span id="score">0</span> 🪙
+        </div>
+    </div>
+
+    <div class="clicker-area">
+        <div class="gold-coin" id="coinBtn">⚔️</div>
+    </div>
+
+    <div class="footer">
+        <button class="btn">المتجر (قريباً)</button>
+    </div>
+
+    <script>
+        let score = 0;
+        const scoreDisplay = document.getElementById('score');
+        const coinBtn = document.getElementById('coinBtn');
+
+        coinBtn.addEventListener('click', () => {
+            score += 1;
+            scoreDisplay.textContent = score;
+        });
+    </script>
+</body>
+</html>
