@@ -2,136 +2,124 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Earn & Contest App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Knight of Gold - Earn & Contest</title>
+    <!-- Telegram SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/sad-index.js"></script>
+    <!-- Adsgram SDK Official -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
-        
-        body { 
-            background: #0b0e14 url('https://i.ibb.co/L8yX7M6/pixel-bg.jpg') no-repeat center center fixed; 
-            background-size: cover;
-            color: #fff; 
-            padding-bottom: 70px; 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+
+        body {
+            background: #0b0e14 url('https://raw.githubusercontent.com/madaraX472/knight-of-gold/main/d9e6f5235474c404892c64ca6e8472e4.jpg') center/cover no-repeat fixed;
+            color: #fff;
+            padding-bottom: 70px;
             min-height: 100vh;
         }
 
-        /* الطبقة المظلمة الأنيقة فوق الخلفية */
         .overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 14, 20, 0.85);
+            background: rgba(11, 14, 20, 0.88);
             z-index: -1;
         }
 
-        .header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px; 
-            background: rgba(18, 24, 38, 0.95); 
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08); 
-        }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #f39c12; object-fit: cover; }
-        .stats-badge { 
-            background: rgba(0, 0, 0, 0.4); 
-            border: 1px solid #f39c12; 
-            border-radius: 18px; 
-            padding: 5px 12px; 
-            font-size: 13px; 
-            font-weight: bold; 
-            color: #f1c40f; 
-            display: inline-flex;
+        .header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 4px;
+            padding: 12px 16px;
+            background: rgba(18, 24, 38, 0.95);
+            border-bottom: 1px solid rgba(255, 193, 7, 0.2);
+            position: sticky; top: 0; z-index: 10;
         }
 
-        .tab-content { display: none; padding: 15px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .user-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ffc107; object-fit: cover; }
+        .stats-badge {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #ffc107;
+            border-radius: 14px;
+            padding: 4px 10px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffc107;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+
+        .tab-content { display: none; padding: 16px; }
         .tab-content.active { display: block; }
 
-        /* التصميم القديم الفخم للبطاقات */
-        .card { 
-            background: rgba(18, 24, 38, 0.85); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 16px; 
-            padding: 16px; 
-            margin-bottom: 15px; 
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        .card {
+            background: rgba(18, 24, 38, 0.9);
+            border: 1px solid rgba(255, 193, 7, 0.25);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(8px);
         }
-        .card-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #3498db; display: flex; align-items: center; gap: 6px; }
 
-        /* شريط التقدم */
-        .progress-container { background: rgba(0, 0, 0, 0.5); border-radius: 10px; height: 10px; width: 100%; overflow: hidden; margin: 10px 0; border: 1px solid rgba(255, 255, 255, 0.05); }
-        .progress-bar { background: linear-gradient(90deg, #2ecc71, #27ae60); height: 100%; width: 0%; transition: width 0.3s ease; }
+        .card-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #ffc107; display: flex; align-items: center; gap: 6px; }
 
-        /* الأزرار الذهبية والخضراء القديمة */
-        .btn-action { 
-            width: 100%; 
-            padding: 13px; 
-            border-radius: 10px; 
-            border: none; 
-            font-size: 14px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            background: linear-gradient(180deg, #2ecc71, #27ae60); 
-            color: #fff; 
-            margin-top: 5px; 
-            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
-            transition: 0.2s;
+        .progress-container { background: rgba(0, 0, 0, 0.6); border-radius: 10px; height: 10px; width: 100%; overflow: hidden; margin: 10px 0; border: 1px solid rgba(255, 193, 7, 0.2); }
+        .progress-bar { background: linear-gradient(90deg, #ff9800, #ffc107); height: 100%; width: 0%; transition: width 0.3s ease; }
+
+        .btn-action {
+            width: 100%;
+            padding: 13px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: #fff;
+            margin-top: 6px;
+            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+            transition: all 0.2s ease;
         }
-        .btn-action:active { transform: scale(0.98); }
+        .btn-action:active { transform: scale(0.97); }
         .btn-action:disabled { background: #34495e; color: #7f8c8d; box-shadow: none; cursor: not-allowed; }
 
-        /* المكافآت اليومية البكسل القديمة */
+        /* Daily Reward Grid */
         .daily-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-        .daily-box { background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px; text-align: center; font-size: 11px; }
-        .daily-box.active { border-color: #3498db; background: rgba(52, 152, 219, 0.2); font-weight: bold; }
-        .daily-box.claimed { border-color: #2ecc71; opacity: 0.3; }
+        .daily-box { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 4px; text-align: center; font-size: 11px; }
+        .daily-box.active { border-color: #ffc107; background: rgba(255, 193, 7, 0.2); font-weight: bold; color: #ffc107; }
+        .daily-box.claimed { border-color: #2ecc71; opacity: 0.4; }
 
-        /* تصميم الترتيب القديم البكسل الفخم */
-        .leader-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 12px; 
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            margin-bottom: 8px;
+        /* Global Leaderboard Realtime List */
+        .leader-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px; background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; margin-bottom: 8px;
         }
-        .leader-item.user-highlight { 
-            background: rgba(241, 196, 15, 0.15); 
-            border: 1px solid #f1c40f; 
-        }
-        .rank-num { font-weight: bold; font-size: 14px; width: 30px; color: #f39c12; }
+        .leader-item.user-highlight { background: rgba(255, 193, 7, 0.18); border: 1px solid #ffc107; }
+        .rank-num { font-weight: bold; font-size: 14px; width: 28px; color: #ffc107; }
 
-        /* نافذة السحب */
+        /* Profile & Withdrawal Forms */
         .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; font-size: 12px; color: #bdc3c7; margin-bottom: 5px; }
-        .input-field { width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; color: #fff; outline: none; font-size: 14px; }
+        .input-group label { display: block; font-size: 12px; color: #bdc3c7; margin-bottom: 6px; }
+        .input-field { width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 10px; color: #fff; outline: none; font-size: 14px; }
 
-        /* القائمة السفلية */
-        .nav-bar { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            background: rgba(18, 24, 38, 0.98); 
-            display: flex; 
-            border-top: 1px solid rgba(255, 255, 255, 0.1); 
+        .navbar {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(18, 24, 38, 0.98); display: flex;
+            border-top: 1px solid rgba(255, 193, 7, 0.2); z-index: 100;
         }
-        .nav-item { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: #7f8c8d; cursor: pointer; }
-        .nav-item.active { color: #f39c12; font-weight: bold; }
+        .nav-item { flex: 1; text-align: center; padding: 12px 0; font-size: 12px; color: #7f8c8d; cursor: pointer; font-weight: 600; }
+        .nav-item.active { color: #ffc107; font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="overlay"></div>
 
+    <!-- Top Header -->
     <div class="header">
         <div class="user-info">
             <img id="uAvatar" class="user-avatar" src="https://telegram.org/img/t_logo.png">
@@ -143,8 +131,9 @@
         </div>
     </div>
 
-    <!-- TAB 1: EARN -->
+    <!-- 1. EARN TAB -->
     <div id="tab-earn" class="tab-content active">
+        <!-- Main Ads (Adsgram) -->
         <div class="card">
             <div class="card-title">📺 Main Ads (Adsgram)</div>
             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #bdc3c7;">
@@ -157,6 +146,7 @@
             <button id="btnAdsgram" class="btn-action" onclick="watchAdsgramAd()">Watch Ad (+1 Ticket)</button>
         </div>
 
+        <!-- Bonus Ads -->
         <div class="card">
             <div class="card-title">🎬 Bonus Ads</div>
             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #bdc3c7;">
@@ -166,32 +156,33 @@
             <div class="progress-container">
                 <div id="secBar" class="progress-bar" style="background: linear-gradient(90deg, #3498db, #2980b9);"></div>
             </div>
-            <button id="btnSecAd" class="btn-action" style="background: linear-gradient(180deg, #3498db, #2980b9);" onclick="watchSecondaryAd()">Watch Bonus Ad (+1 Ticket)</button>
+            <button id="btnSecAd" class="btn-action" style="background: linear-gradient(135deg, #3498db, #2980b9);" onclick="watchSecondaryAd()">Watch Bonus Ad (+1 Ticket)</button>
         </div>
 
+        <!-- Daily Reward -->
         <div class="card">
             <div class="card-title">📅 Daily Reward (Watch Ad to Claim)</div>
             <div class="daily-grid" id="dailyGrid"></div>
-            <button id="btnDaily" class="btn-action" style="margin-top: 12px; background: linear-gradient(180deg, #f39c12, #d35400);" onclick="claimDailyReward()">Claim Today's Reward</button>
+            <button id="btnDaily" class="btn-action" style="margin-top: 12px; background: linear-gradient(135deg, #ff9800, #ed6c02);" onclick="claimDailyReward()">Claim Today's Reward</button>
             <div id="dailyTimer" style="text-align: center; font-size: 12px; color: #bdc3c7; margin-top: 6px;"></div>
         </div>
     </div>
 
-    <!-- TAB 2: CONTEST -->
+    <!-- 2. CONTEST TAB -->
     <div id="tab-contest" class="tab-content">
         <div class="card">
             <div class="card-title">🏆 Global Live Leaderboard</div>
             <div style="font-size: 12px; color: #bdc3c7; margin-bottom: 12px;">End of Season Reward: Top 10 users get automatic wallet payout!</div>
-            <div id="leaderboardContainer">Loading real-time ranks...</div>
+            <div id="leaderboardContainer">Loading real users leaderboard...</div>
         </div>
     </div>
 
-    <!-- TAB 3: PROFILE -->
+    <!-- 3. PROFILE & WITHDRAWAL TAB -->
     <div id="tab-profile" class="tab-content">
         <div class="card">
             <div class="card-title">👤 Account & Referrals</div>
-            <p style="font-size: 13px; color: #bdc3c7; margin-bottom: 10px;">Earn <b>$0.01 + 100 Tickets</b> per active referral (Invitee must watch 3 ads).</p>
-            <button class="btn-action" onclick="copyInviteLink()" style="background: linear-gradient(180deg, #8e44ad, #9b59b6);">📋 Copy Referral Link</button>
+            <p style="font-size: 13px; color: #bdc3c7; margin-bottom: 10px;">Earn <b>$0.01 + 100 Tickets</b> per active referral (Invitee must watch at least 3 ads).</p>
+            <button class="btn-action" onclick="copyInviteLink()" style="background: linear-gradient(135deg, #8e44ad, #9b59b6);">📋 Copy Referral Link</button>
         </div>
 
         <div class="card">
@@ -209,31 +200,30 @@
         </div>
     </div>
 
-    <!-- NAV BAR -->
-    <div class="nav-bar">
+    <!-- Bottom Navigation Bar -->
+    <div class="navbar">
         <div class="nav-item active" onclick="switchTab('earn', this)">Earn</div>
         <div class="nav-item" onclick="switchTab('contest', this)">Contest</div>
         <div class="nav-item" onclick="switchTab('profile', this)">Profile</div>
     </div>
 
     <script>
-        // 1. Firebase Initialization
-        const firebaseConfig = {
-            databaseURL: "https://earn-money-336fd-default-rtdb.firebaseio.com"
-        };
+        // 1. Firebase Initialization (Realtime Database)
+        const firebaseConfig = { databaseURL: "https://earn-money-336fd-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 2. Adsgram Controller Setup (Replace ID with your Adsgram Block ID if needed)
-        const AdController = window.Adsgram?.init({ blockId: "your-adsgram-block-id" });
+        // 2. Official Adsgram Controller Integration
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "45406" }) : null;
 
-        // 3. Telegram WebApp Integration & Photo Fix
+        // 3. Telegram App User Integration
         const tg = window.Telegram?.WebApp;
         tg?.expand();
 
         const user = tg?.initDataUnsafe?.user || { id: "dev_user_1", first_name: "Madara ~", photo_url: "" };
         const userId = user.id.toString();
 
+        // Single Device Security Lock
         let deviceID = localStorage.getItem('app_device_id');
         if (!deviceID) {
             deviceID = 'DEV_' + Math.random().toString(36).substring(2, 15);
@@ -276,7 +266,7 @@
                 if (snapshot.exists()) {
                     const data = snapshot.val();
                     if (data.deviceId && data.deviceId !== deviceID) {
-                        alert("Device Mismatch: Multi-account access denied!");
+                        alert("Multi-account access denied on this device!");
                         document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Device Access Blocked</h2>";
                         return;
                     }
@@ -287,7 +277,7 @@
                 updateUI();
             });
 
-            // Live Leaderboard Realtime Firebase Sync
+            // Global Realtime Leaderboard (Only Real Active Users)
             db.ref('users').orderByChild('tickets').limitToLast(50).on('value', (snapshot) => {
                 renderGlobalLeaderboard(snapshot);
             });
@@ -321,20 +311,18 @@
             renderDailyGrid();
         }
 
-        // Ads Watcher with Real Adsgram Handling
+        // Real Adsgram Ad Trigger (No Fake Simulations)
         function watchAdsgramAd() {
             if (userData.adsgramCount >= 100) return alert("Daily limit reached (100 Ads). Please wait 5 hours.");
 
             if (AdController) {
                 AdController.show().then(() => {
                     grantAdReward('adsgram');
-                }).catch(() => {
-                    alert("Ad failed to load or closed early.");
+                }).catch((err) => {
+                    alert("Ad was not completed or failed to load.");
                 });
             } else {
-                // Simulation Mode for testing if Adsgram SDK is unavailable
-                alert("Simulating Ad View (20s Cooldown)...");
-                setTimeout(() => grantAdReward('adsgram'), 20000);
+                alert("Adsgram SDK is loading. Please try again in a few seconds.");
             }
         }
 
@@ -345,15 +333,16 @@
                 AdController.show().then(() => {
                     grantAdReward('sec');
                 }).catch(() => {
-                    alert("Ad failed to load.");
+                    alert("Ad was not completed.");
                 });
             } else {
-                alert("Simulating Ad View (20s Cooldown)...");
-                setTimeout(() => grantAdReward('sec'), 20000);
+                alert("Adsgram SDK is loading. Please try again in a few seconds.");
             }
         }
 
         function grantAdReward(type) {
+            const btn = (type === 'adsgram') ? document.getElementById('btnAdsgram') : document.getElementById('btnSecAd');
+            
             if (type === 'adsgram') {
                 userData.adsgramCount += 1;
                 if (userData.adsgramCount >= 100) userData.adsgramCooldown = Date.now() + (5 * 60 * 60 * 1000);
@@ -366,9 +355,30 @@
             userData.totalAdsWatched += 1;
             checkReferralReward();
             saveCloudData();
+
+            // 20-Second Mandatory Cooldown between ads
+            startBtnCooldown(btn, 20);
         }
 
-        // Daily Login Strict Protection (Requires Watching Ad + 24 Hours Lock)
+        function startBtnCooldown(btn, seconds) {
+            btn.disabled = true;
+            let left = seconds;
+            const originalText = btn.innerText;
+            btn.innerText = `Wait (${left}s)...`;
+
+            const timer = setInterval(() => {
+                left--;
+                if (left <= 0) {
+                    clearInterval(timer);
+                    btn.disabled = false;
+                    btn.innerText = originalText;
+                } else {
+                    btn.innerText = `Wait (${left}s)...`;
+                }
+            }, 1000);
+        }
+
+        // Daily Login Grid Logic
         function renderDailyGrid() {
             const grid = document.getElementById('dailyGrid');
             grid.innerHTML = "";
@@ -397,15 +407,13 @@
                 return alert("You can only claim daily rewards once every 24 hours!");
             }
 
-            // Forced Ad Watch before claiming
             if (AdController) {
                 AdController.show().then(() => {
                     processDailyClaim();
                 }).catch(() => {
-                    alert("You must watch the complete ad to claim your reward!");
+                    alert("You must watch the full ad to claim your daily reward!");
                 });
             } else {
-                alert("Ad watched successfully! Granting reward...");
                 processDailyClaim();
             }
         }
@@ -416,7 +424,7 @@
             userData.tickets += currentReward.tickets;
             userData.lastDailyTimestamp = Date.now();
 
-            if (userData.dailyDay >= 7) {
+                        if (userData.dailyDay >= 7) {
                 userData.dailyDay = 1;
             } else {
                 userData.dailyDay += 1;
@@ -426,7 +434,7 @@
             alert(`Claimed Day ${userData.dailyDay - 1} Reward Successfully!`);
         }
 
-        // Referral System (0.01$ + 100 Tickets)
+        // Referral Validation
         function checkReferralReward() {
             if (userData.referredBy && userData.totalAdsWatched === 3) {
                 db.ref('users/' + userData.referredBy).transaction((inviter) => {
@@ -442,10 +450,10 @@
         function copyInviteLink() {
             const inviteLink = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
             navigator.clipboard.writeText(inviteLink);
-            alert("Referral Link Copied!");
+            alert("Referral link copied!");
         }
 
-        // Global Leaderboard - Classic Dark/Golden Pixel Look
+        // Render Real World Leaderboard (No Bot Users)
         function renderGlobalLeaderboard(snapshot) {
             const container = document.getElementById('leaderboardContainer');
             container.innerHTML = "";
@@ -455,19 +463,19 @@
                 list.push({ id: child.key, ...child.val() });
             });
 
-            list.sort((a, b) => b.tickets - a.tickets);
+            list.sort((a, b) => (b.tickets || 0) - (a.tickets || 0));
 
             list.forEach((item, index) => {
                 const isCurrent = item.id === userId;
                 const div = document.createElement('div');
                 div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
                 div.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
                         <span class="rank-num">#${index + 1}</span>
                         <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
                         <div>
                             <div style="font-size: 13px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
-                            <div style="font-size: 11px; color: #f39c12;">🎫 ${item.tickets} Tickets</div>
+                            <div style="font-size: 11px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
                         </div>
                     </div>
                 `;
@@ -475,13 +483,13 @@
             });
         }
 
-        // Withdrawal Handling
+        // Withdrawal System
         function requestWithdrawal() {
             const addr = document.getElementById('withdrawAddress').value.trim();
             const amt = parseFloat(document.getElementById('withdrawAmount').value);
 
             if (!addr) return alert("Please enter a valid wallet address.");
-            if (isNaN(amt) || amt < 0.0150) return alert("Minimum withdrawal is $0.0150 USDT.");
+            if (isNaN(amt) || amt < 0.0150) return alert("Minimum withdrawal amount is $0.0150 USDT.");
             if (amt > userData.balance) return alert("Insufficient balance!");
 
             userData.balance -= amt;
@@ -497,12 +505,12 @@
             });
 
             document.getElementById('withdrawalHistory').innerHTML = `
-                <div style="background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                    <span style="background: #f39c12; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">Pending ⏳</span>
+                <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid rgba(255,193,7,0.3);">
+                    <span style="background: #ffc107; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">Pending ⏳</span>
                     <p style="font-size: 12px; margin-top: 6px; color: #bdc3c7;">Withdrawal request for <b>$${amt} USDT</b> submitted to: ${addr}</p>
                 </div>
             `;
-            alert("Withdrawal submitted successfully!");
+            alert("Withdrawal request submitted! Payout will be processed soon.");
         }
 
         function saveCloudData() {
