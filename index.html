@@ -1,219 +1,262 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Knight of the Gold</title>
+    <title>Knight of Gold</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             user-select: none;
-            -webkit-user-select: none;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            /* استدعاء الصورة المرفوعة مع لون احتياطي */
             background: #0d0f17 url('d9e6f5235474c404892c64ca6e8472e4.jpg?v=2') no-repeat center center fixed;
-            
-            
-            
-            
             background-size: cover;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
             color: #fff;
-            padding: 15px 15px 80px 15px;
-            overflow: hidden;
+            padding-bottom: 75px;
+            overflow-x: hidden;
         }
 
         .overlay {
-            position: absolute;
+            position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0, 0, 0, 0.45);
+            background: rgba(13, 15, 23, 0.65);
+            backdrop-filter: blur(8px);
             z-index: 1;
         }
 
-        .content {
+        .app-container {
             position: relative;
             z-index: 2;
-            width: 100%;
-            max-width: 420px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
+            max-width: 430px;
+            margin: 0 auto;
+            padding: 15px;
         }
 
-        /* رسالة الترحيب علوية */
-        .welcome-banner {
-            text-align: center;
-            margin-bottom: 12px;
-            text-shadow: 0 0 15px rgba(251, 191, 36, 0.8), 0 2px 8px rgba(0,0,0,0.9);
-        }
-
-        .welcome-banner h1 {
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #e2e8f0;
-            font-weight: 600;
-        }
-
-        .welcome-banner h2 {
-            font-size: 22px;
-            font-weight: 900;
-            background: linear-gradient(180deg, #ffe066, #f59e0b);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* كارد الإحصائيات */
-        .header-stats {
-            background: rgba(15, 23, 42, 0.75);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 10px 16px;
-            width: 100%;
+        /* Top Bar Header */
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
             margin-bottom: 15px;
         }
 
-        .stat-box h4 {
-            font-size: 10px;
-            color: #94a3b8;
+        .user-pill {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 600;
         }
 
-        .stat-box p {
-            font-size: 14px;
-            font-weight: bold;
-            color: #f59e0b;
+        .stats-pills {
+            display: flex;
+            gap: 8px;
         }
 
-        /* عرض الرصيد */
-        .balance-container {
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 215, 0, 0.25);
+            padding: 6px 12px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffd700;
+        }
+
+        /* Tournament Card */
+        .tournament-card {
+            background: linear-gradient(135deg, rgba(49, 36, 89, 0.85), rgba(21, 16, 43, 0.9));
+            border: 1px solid rgba(168, 85, 247, 0.4);
+            border-radius: 20px;
+            padding: 16px;
             text-align: center;
-            margin: 5px 0;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
-        .balance-title {
-            font-size: 12px;
+        .tournament-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+            color: #f1f5f9;
+        }
+
+        .prize-pool {
+            font-size: 13px;
             color: #cbd5e1;
         }
 
-        .balance-value {
-            font-size: 36px;
-            font-weight: 900;
-            color: #fbbf24;
-            text-shadow: 0 0 20px rgba(251, 191, 36, 0.6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
+        .prize-pool span {
+            color: #ffd700;
+            font-weight: 800;
         }
 
-        /* العملة المصممة بـ CSS */
-        .coin-wrapper {
-            position: relative;
-            margin: 25px 0;
-            cursor: pointer;
+        /* Sections Routing */
+        .tab-content {
+            display: none;
         }
 
-        .gold-coin {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #ffe066 0%, #f5af19 50%, #e65c00 100%);
-            border: 6px solid #ffd700;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6), inset 0 0 15px rgba(0, 0, 0, 0.4);
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Hero Game Area */
+        .hero-section {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            transition: transform 0.05s ease;
+            justify-content: center;
+            min-height: 320px;
+            position: relative;
         }
 
-        .gold-coin:active {
-            transform: scale(0.93);
+        .hero-character {
+            font-size: 110px;
+            margin: 15px 0;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.6));
+            animation: bounce 2s infinite ease-in-out;
         }
 
-        .coin-icon {
-            font-size: 55px;
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
         }
 
-        .coin-text {
-            font-size: 12px;
-            font-weight: 900;
-            color: #5c2c00;
-            letter-spacing: 1px;
+        .start-btn {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            color: #fff;
+            padding: 14px 45px;
+            font-size: 18px;
+            font-weight: 800;
+            border-radius: 25px;
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s;
         }
 
-        /* التأثير الطائر */
-        .floating-num {
-            position: absolute;
-            font-size: 26px;
-            font-weight: bold;
-            color: #5eead4;
-            text-shadow: 0 0 10px rgba(94, 234, 212, 0.8);
-            pointer-events: none;
-            animation: floatUp 0.8s ease-out forwards;
+        .start-btn:active {
+            transform: scale(0.95);
         }
 
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+        /* Leaderboard Section */
+        .leaderboard-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .energy-card {
-            width: 100%;
+        .leaderboard-item {
+            background: rgba(30, 27, 55, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 8px 15px;
-            border-radius: 12px;
-            margin-top: auto;
         }
 
-        /* القائمة السفلية */
+        .rank-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .rank-num {
+            font-weight: 900;
+            font-size: 15px;
+            width: 25px;
+            color: #94a3b8;
+        }
+
+        .rank-num.top1 { color: #ffd700; }
+        .rank-num.top2 { color: #e2e8f0; }
+        .rank-num.top3 { color: #cd7f32; }
+
+        .player-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .player-name {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .player-reward {
+            text-align: right;
+        }
+
+        .reward-amount {
+            font-weight: 800;
+            font-size: 14px;
+            color: #ffd700;
+        }
+
+        .reward-usdt {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* Professional Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0; left: 0; right: 0;
-            height: 60px;
-            background: rgba(15, 23, 42, 0.95);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
+            height: 65px;
+            background: rgba(13, 17, 23, 0.92);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             justify-content: space-around;
             align-items: center;
-            z-index: 10;
+            z-index: 100;
         }
 
-        .nav-item {
+        .nav-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #94a3b8;
-            font-size: 10px;
+            gap: 4px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 600;
             cursor: pointer;
+            transition: color 0.2s;
+            width: 20%;
         }
 
-        .nav-item.active {
-            color: #f59e0b;
-        }
-
-        .nav-item span {
+        .nav-btn i {
             font-size: 18px;
-            margin-bottom: 2px;
+        }
+
+        .nav-btn.active {
+            color: #f59e0b;
         }
     </style>
 </head>
@@ -221,64 +264,127 @@
 
     <div class="overlay"></div>
 
-    <div class="content">
-        <div class="welcome-banner">
-            <h1>WELCOME TO THE WORLD OF</h1>
-            <h2>GOLD WARRIOR ⚔️</h2>
-        </div>
-
-        <div class="header-stats">
-            <div class="stat-box">
-                <h4>نهاية الموسم ⏳</h4>
-                <p>19 يوم 23:59</p>
+    <div class="app-container">
+        <!-- Top Stats Header -->
+        <div class="top-bar">
+            <div class="user-pill">
+                <span>🛡️</span>
+                <span id="username">Warrior</span>
             </div>
-            <div class="stat-box" style="text-align: left;">
-                <h4>ربح التعدين/سا ⛏️</h4>
-                <p>+1,000 GW</p>
-            </div>
-        </div>
-
-        <div class="balance-container">
-            <span class="balance-title">رصيد عملات Gold Warrior</span>
-            <div class="balance-value">
-                <span id="balance">0</span>
-                <span style="font-size: 22px;">🪙</span>
+            <div class="stats-pills">
+                <div class="stat-pill">
+                    🪙 <span id="coinCount">113</span>
+                </div>
+                <div class="stat-pill" style="color: #f59e0b;">
+                    🎟️ <span id="ticketCount">35</span>
+                </div>
             </div>
         </div>
 
-        <div class="coin-wrapper" id="coinCard" onclick="handleTap(event)">
-            <div class="gold-coin">
-                <div class="coin-icon">⚔️</div>
-                <div class="coin-text">GW COIN</div>
+        <!-- Tournament Info Banner -->
+        <div class="tournament-card">
+            <div class="tournament-title">Gold Warrior Tournament ⚔️</div>
+            <div class="prize-pool">Prize Pool: <span>4,000,000 $GW</span> (500 Winners)</div>
+        </div>
+
+        <!-- TAB 1: GAME -->
+        <div id="gameTab" class="tab-content active">
+            <div class="hero-section">
+                <div class="hero-character">🥷</div>
+                <button class="start-btn" onclick="startGame()">
+                    Start 🎟️
+                </button>
             </div>
         </div>
 
-        <div class="energy-card">
-            <span>⚡ <strong id="energy">1000</strong> / 1000</span>
-            <span style="color: #cbd5e1; font-size: 11px;">انقر لتجميع الذهب</span>
+        <!-- TAB 2: LEADERBOARD -->
+        <div id="leaderboardTab" class="tab-content">
+            <div class="leaderboard-list">
+                <div class="leaderboard-item">
+                    <div class="rank-info">
+                        <span class="rank-num top1">#1</span>
+                        <div class="player-avatar" style="background:#f59e0b;">👑</div>
+                        <span class="player-name">Kinzar</span>
+                    </div>
+                    <div class="player-reward">
+                        <div class="reward-amount">500,000 🪙</div>
+                        <div class="reward-usdt">≈ $64.05</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="rank-info">
+                        <span class="rank-num top2">#2</span>
+                        <div class="player-avatar" style="background:#64748b;">⚔️</div>
+                        <span class="player-name">Teteshka</span>
+                    </div>
+                    <div class="player-reward">
+                        <div class="reward-amount">360,000 🪙</div>
+                        <div class="reward-usdt">≈ $46.11</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="rank-info">
+                        <span class="rank-num top3">#3</span>
+                        <div class="player-avatar" style="background:#b45309;">🛡️</div>
+                        <span class="player-name">Bot Maker</span>
+                    </div>
+                    <div class="player-reward">
+                        <div class="reward-amount">280,000 🪙</div>
+                        <div class="reward-usdt">≈ $35.86</div>
+                    </div>
+                </div>
+
+                <div class="leaderboard-item">
+                    <div class="rank-info">
+                        <span class="rank-num">#4</span>
+                        <div class="player-avatar">🥷</div>
+                        <span class="player-name">Antoxa</span>
+                    </div>
+                    <div class="player-reward">
+                        <div class="reward-amount">200,000 🪙</div>
+                        <div class="reward-usdt">≈ $25.62</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SHOP / EARN / WALLET PLACEHOLDERS -->
+        <div id="shopTab" class="tab-content" style="text-align: center; padding: 40px 0;">
+            <h3>Shop Coming Soon 🛍️</h3>
+        </div>
+        <div id="earnTab" class="tab-content" style="text-align: center; padding: 40px 0;">
+            <h3>Watch Ads & Tasks 📺</h3>
+        </div>
+        <div id="walletTab" class="tab-content" style="text-align: center; padding: 40px 0;">
+            <h3>Connect TON Wallet 💼</h3>
         </div>
     </div>
 
+    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
-        <div class="nav-item active">
-            <span>🪙</span>
-            النقر
+        <div class="nav-btn active" onclick="switchTab('gameTab', this)">
+            <i class="fa-solid fa-gamepad"></i>
+            <span>Game</span>
         </div>
-        <div class="nav-item" onclick="alert('قسم التعدين قيد التطوير')">
-            <span>⛏️</span>
-            التعدين
+        <div class="nav-btn" onclick="switchTab('shopTab', this)">
+            <div style="position:relative;">
+                <i class="fa-solid fa-store"></i>
+            </div>
+            <span>Shop</span>
         </div>
-        <div class="nav-item" onclick="alert('قسم الغارات قيد التطوير')">
-            <span>⚔️</span>
-            الغارة
+        <div class="nav-btn" onclick="switchTab('leaderboardTab', this)">
+            <i class="fa-solid fa-trophy"></i>
+            <span>Leaderboard</span>
         </div>
-        <div class="nav-item" onclick="alert('قسم الإعلانات قيد التطوير')">
-            <span>📺</span>
-            المهام
+        <div class="nav-btn" onclick="switchTab('earnTab', this)">
+            <i class="fa-solid fa-sack-dollar"></i>
+            <span>Earn</span>
         </div>
-        <div class="nav-item" onclick="alert('قسم المحفظة قيد التطوير')">
-            <span>💼</span>
-            المحفظة
+        <div class="nav-btn" onclick="switchTab('walletTab', this)">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
         </div>
     </div>
 
@@ -286,44 +392,25 @@
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        let balance = 0;
-        let energy = 1000;
-
-        function handleTap(event) {
-            if (energy <= 0) return;
-
-            balance += 1;
-            energy -= 1;
-            document.getElementById('balance').innerText = balance.toLocaleString();
-            document.getElementById('energy').innerText = energy;
-
-            if (tg.HapticFeedback) {
-                tg.HapticFeedback.impactOccurred('light');
-            }
-
-            let coinWrapper = document.getElementById('coinCard');
-            let rect = coinWrapper.getBoundingClientRect();
-            let x = event.clientX - rect.left;
-            let y = event.clientY - rect.top;
-
-            let num = document.createElement('div');
-            num.className = 'floating-num';
-            num.innerText = '+1';
-            num.style.left = `${x}px`;
-            num.style.top = `${y}px`;
-
-            coinWrapper.appendChild(num);
-
-            setTimeout(() => { num.remove(); }, 800);
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
         }
 
-        setInterval(() => {
-            if (energy < 1000) {
-                energy += 2;
-                if (energy > 1000) energy = 1000;
-                document.getElementById('energy').innerText = energy;
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+
+            if (tg.HapticFeedback) {
+                tg.HapticFeedback.selectionChanged();
             }
-        }, 1000);
+        }
+
+        function startGame() {
+            alert("Starting Jump Game... 🚀");
+        }
     </script>
 </body>
 </html>
