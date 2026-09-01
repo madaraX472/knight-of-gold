@@ -20,7 +20,7 @@
             padding: 0; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             user-select: none;
-            -webkit-tap-highlight-color: transparent; /* Removed blue tap box */
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
@@ -77,7 +77,7 @@
 
         .card-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; color: #ffc107; display: flex; align-items: center; gap: 6px; }
 
-        /* Round Fancy Buttons */
+        /* Buttons */
         .btn-action {
             width: 100%;
             padding: 13px;
@@ -99,7 +99,7 @@
         }
         .btn-action:disabled { background: #34495e; color: #7f8c8d; box-shadow: none; cursor: not-allowed; }
 
-        /* Daily Login Grid */
+        /* Daily Grid */
         .daily-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
         .daily-box {
             background: rgba(0, 0, 0, 0.5);
@@ -122,13 +122,14 @@
         .rank-num { font-weight: bold; font-size: 13px; width: 28px; color: #ffc107; }
         .prize-tag { font-size: 11px; background: rgba(46, 204, 113, 0.2); color: #2ecc71; padding: 2px 8px; border-radius: 10px; border: 1px solid #2ecc71; }
 
-        /* Custom Professional Toast Notification */
+        /* Toast Notification */
         .toast-notification {
             position: fixed; top: -60px; left: 50%; transform: translateX(-50%);
             background: rgba(20, 24, 35, 0.95); border: 1px solid #ffc107; color: #fff;
             padding: 10px 20px; border-radius: 30px; font-size: 12px; font-weight: bold;
             box-shadow: 0 0 15px rgba(255, 193, 7, 0.4); z-index: 2000;
             transition: top 0.4s ease; display: flex; align-items: center; gap: 8px;
+            width: 90%; max-width: 380px; justify-content: center; text-align: center;
         }
         .toast-notification.show { top: 20px; }
 
@@ -145,11 +146,12 @@
 
         /* Input Fields */
         .input-field {
-            width: 100%; padding: 12px; background: #0b0e14; border: 1px solid rgba(255, 193, 7, 0.5);
-            border-radius: 12px; color: #fff; margin: 8px 0; outline: none; font-size: 12px;
+            width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.6); border: 1px solid rgba(255, 193, 7, 0.4);
+            border-radius: 12px; color: #fff; margin: 6px 0 12px 0; outline: none; font-size: 12px;
         }
+        .input-field:focus { border-color: #ff9800; box-shadow: 0 0 8px rgba(255, 152, 0, 0.4); }
 
-        /* Bottom Navbar Styling */
+        /* Bottom Navbar */
         .navbar {
             position: fixed; bottom: 0; left: 0; width: 100%;
             background: rgba(18, 24, 38, 0.98); display: flex;
@@ -161,7 +163,6 @@
             cursor: pointer; font-weight: 600; border-radius: 14px;
             transition: all 0.25s ease;
         }
-        /* Active Tab Orange Glow Effect */
         .nav-item.active {
             color: #ff9800;
             background: rgba(255, 152, 0, 0.15);
@@ -174,7 +175,7 @@
 <body>
     <div class="overlay"></div>
 
-    <!-- Toast Notification Container -->
+    <!-- Toast Notification -->
     <div id="toast" class="toast-notification">
         <span id="toastIcon">✨</span>
         <span id="toastMsg">Notification message</span>
@@ -197,7 +198,8 @@
         <!-- Adsgram Ad -->
         <div class="card">
             <div class="card-title">📺 Watch Adsgram Ad</div>
-            <p style="font-size: 11px; color: #bdc3c7; margin-bottom: 8px;">Reward: <b>+$0.0005 + 100 Tickets</b></p>
+            <p style="font-size: 11px; color: #bdc3c7; margin-bottom: 4px;">Reward: <b>+$0.0015 + 100 Tickets</b></p>
+            <p id="adsgramLimitText" style="font-size: 10px; color: #ffc107; margin-bottom: 8px;">Limit: 30 ads / 5 hours</p>
             <button id="btnAdsgram" class="btn-action" onclick="watchAdsgramAd()">Watch Adsgram Ad</button>
         </div>
 
@@ -219,7 +221,6 @@
 
     <!-- 2. REFERRALS & PROMO TAB -->
     <div id="tab-referral" class="tab-content">
-        <!-- Referral Section -->
         <div class="card">
             <div class="card-title">👥 Invite Friends & Earn</div>
             <p style="font-size: 11px; color: #bdc3c7; margin-bottom: 10px;">
@@ -240,14 +241,12 @@
             <button class="btn-action" onclick="copyInviteLink()">🔗 Copy Invite Link</button>
         </div>
 
-        <!-- Promo Code Section -->
         <div class="card">
             <div class="card-title">🏷️ Promo Code</div>
             <input type="text" id="promoInput" class="input-field" placeholder="Enter Promo Code...">
             <button class="btn-action" style="background: linear-gradient(135deg, #27ae60, #2ecc71);" onclick="submitPromoCode()">Redeem Code</button>
         </div>
 
-        <!-- Tasks Section -->
         <div class="card">
             <div class="card-title">🎯 Tasks & Rewards</div>
             <div class="task-item">
@@ -273,9 +272,8 @@
         </div>
     </div>
 
-    <!-- 4. PROFILE TAB -->
+    <!-- 4. PROFILE & WITHDRAW TAB -->
     <div id="tab-profile" class="tab-content">
-        <!-- User Profile Card -->
         <div class="card" style="text-align: center;">
             <img id="profAvatar" class="user-avatar" style="width: 60px; height: 60px; margin-bottom: 8px;" src="https://telegram.org/img/t_logo.png">
             <h3 id="profName" style="font-size: 15px; color: #ffc107;">User Name</h3>
@@ -287,13 +285,20 @@
             </div>
         </div>
 
-        <!-- Withdrawal Section -->
+        <!-- Professional Withdrawal Section -->
         <div class="card">
-            <div class="card-title">💸 Withdraw Earnings</div>
-            <p style="font-size: 10px; color: #bdc3c7; margin-bottom: 6px;">Minimum Withdrawal Limit: <b>$0.015 USDT (TON)</b></p>
+            <div class="card-title">💎 Withdraw Earnings (USDT TON)</div>
+            <p style="font-size: 10px; color: #bdc3c7; margin-bottom: 12px;">
+                Minimum Withdrawal: <b style="color: #2ecc71;">$0.05 USDT</b>
+            </p>
             
-            <input type="text" id="withdrawAddress" class="input-field" placeholder="Enter USDT (TON) Address...">
-            <button id="btnWithdraw" class="btn-action" style="background: linear-gradient(135deg, #e74c3c, #c0392b);" onclick="processWithdrawal()">Submit Withdrawal</button>
+            <label style="font-size: 11px; color: #ffc107; font-weight: bold;">Amount (USDT):</label>
+            <input type="number" id="withdrawAmount" class="input-field" placeholder="Min 0.05" step="0.001" min="0.05">
+
+            <label style="font-size: 11px; color: #ffc107; font-weight: bold;">TON Wallet Address:</label>
+            <input type="text" id="withdrawAddress" class="input-field" placeholder="EQ... or UQ...">
+
+            <button id="btnWithdraw" class="btn-action" style="background: linear-gradient(135deg, #27ae60, #2ecc71);" onclick="processWithdrawal()">Confirm Withdrawal</button>
         </div>
     </div>
 
@@ -329,6 +334,8 @@
             tickets: 0,
             dailyDay: 1,
             adsWatched: 0,
+            adsgramCount: 0,
+            adsgramResetTime: 0,
             activeRefsCount: 0,
             pendingRefsCount: 0,
             taskCompleted: false
@@ -344,18 +351,9 @@
             { usd: 0.0030, tickets: 500 }
         ];
 
-        // Exact Contest Prize Structure
         const contestPrizes = [
-            "$2.00", // Rank #1
-            "$1.00", // Rank #2
-            "$0.50", // Rank #3
-            "$0.10", // Rank #4
-            "$0.10", // Rank #5
-            "$0.10", // Rank #6
-            "$0.10", // Rank #7
-            "$0.05", // Rank #8
-            "$0.05", // Rank #9
-            "$0.05"  // Rank #10
+            "$2.00", "$1.00", "$0.50", "$0.10", "$0.10",
+            "$0.10", "$0.10", "$0.05", "$0.05", "$0.05"
         ];
 
         function initData() {
@@ -368,19 +366,18 @@
                 document.getElementById('profAvatar').src = user.photo_url;
             }
 
-            // Sync User Firebase Data
             db.ref('users/' + userId).on('value', (snapshot) => {
                 if (snapshot.exists()) {
                     userData = { ...userData, ...snapshot.val() };
                 } else {
                     db.ref('users/' + userId).set(userData);
                 }
+                checkAdsgramLimit();
                 updateUI();
             });
 
             setupContestTimer();
 
-            // Realtime Contest Leaderboard
             db.ref('users').orderByChild('tickets').limitToLast(50).on('value', (snapshot) => {
                 renderLeaderboard(snapshot);
             });
@@ -405,7 +402,6 @@
             renderDailyGrid();
         }
 
-        // Custom Toast Notification System
         function showToast(message, icon = "🎉") {
             const toast = document.getElementById('toast');
             document.getElementById('toastMsg').innerText = message;
@@ -414,258 +410,318 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
-        // 1. Adsgram Ad
+        // Adsgram Limit Handler (30 ads / 5 hours)
+        function checkAdsgramLimit() {
+            const now = Date.now();
+            const fiveHours = 5 * 60 * 60 * 1000;
+
+            if (!userData.adsgramResetTime || now >= userData.adsgramResetTime) {
+                userData.adsgramCount = 0;
+                userData.adsgramResetTime = now + fiveHours;
+                saveCloudData();
+            }
+
+            const btn = document.getElementById('btnAdsgram');
+            const limitText = document.getElementById('adsgramLimitText');
+
+            if (userData.adsgramCount >= 30) {
+                btn.disabled = true;
+                const remainingSecs = Math.ceil((userData.adsgramResetTime - now) / 1000);
+                const h = Math.floor(remainingSecs / 3600);
+                const m = Math.floor((remainingSecs % 3600) / 60);
+                limitText.innerText = `Limit reached (30/30). Resets in: ${h}h ${m}m`;
+            } else {
+                btn.disabled = false;
+                limitText.innerText = `Watched: ${userData.adsgramCount || 0}/30 (Resets every 5 hrs)`;
+            }
+        }
+
         function watchAdsgramAd() {
+            checkAdsgramLimit();
+            if (userData.adsgramCount >= 30) {
+                showToast("Reached limit of 30 ads for 5 hours!", "⏳");
+                return;
+            }
+
             if (AdController) {
                 AdController.show().then(() => {
-                    userData.balance += 0.0005;
+                    userData.balance += 0.0015;
                     userData.tickets += 100;
                     userData.adsWatched = (userData.adsWatched || 0) + 1;
-                    saveCloudData();
-                    showToast("Reward Granted: +$0.0005 & +100 Tickets!", "💰");
-                }).catch(() => {
-                    showToast("You must watch the full ad to claim reward!", "⚠️");
-                });
-            } else {
-                showToast("Ad SDK loading, please try again.", "⚠️");
-            }
-        }
-
-        // 2. Adsterra Ad (10 Seconds Timer Validation)
-        let adsterraTimer = null;
-        let adsterraSecondsLeft = 10;
-        let isAdsterraActive = false;
-        const adsterraDirectLink = "https://www.highperformancecpmgate.com/example_link";
-
-        function watchAdsterraAd() {
-            window.open(adsterraDirectLink, '_blank');
-            isAdsterraActive = true;
-            adsterraSecondsLeft = 10;
-
-            document.getElementById('btnAdsterra').disabled = true;
-            document.getElementById('adsterraStatus').innerText = `Keep ad open: 10s remaining...`;
-
-            if (adsterraTimer) clearInterval(adsterraTimer);
-
-            adsterraTimer = setInterval(() => {
-                if (document.hidden) {
-                    clearInterval(adsterraTimer);
-                    isAdsterraActive = false;
-                    document.getElementById('btnAdsterra').disabled = false;
-                    document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: Page lost focus!";
-                    return;
-                }
-
-                adsterraSecondsLeft--;
-                if (adsterraSecondsLeft > 0) {
-                    document.getElementById('adsterraStatus').innerText = `Keep ad open: ${adsterraSecondsLeft}s remaining...`;
-                } else {
-                    clearInterval(adsterraTimer);
-                    isAdsterraActive = false;
-                    document.getElementById('btnAdsterra').disabled = false;
-                    document.getElementById('adsterraStatus').innerText = "✅ Reward claimed!";
+                    userData.adsgramCount = (userData.adsgramCount || 0) + 1;
                     
-                    userData.balance += 0.00025;
-                    userData.tickets += 50;
-                    userData.adsWatched = (userData.adsWatched || 0) + 1;
                     saveCloudData();
-                    showToast("Adsterra Reward: +$0.00025 & +50 Tickets!", "🌐");
-                }
-            }, 1000);
-        }
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden && isAdsterraActive) {
-                clearInterval(adsterraTimer);
-                isAdsterraActive = false;
-                document.getElementById('btnAdsterra').disabled = false;
-                document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: You left early!";
-            }
+                    checkAdsgramLimit();
+                    showToast("Adsgram Reward: +$0.0015 & +100 Tickets!", "💰");
+                }).catch(() => {
+                                showToast("You must watch the full ad to claim reward!", "⚠️");
         });
+    } else {
+        showToast("Ad SDK loading, please try again.", "⚠️");
+    }
+}
 
-        // 3. Daily Rewards
-        function renderDailyGrid() {
-            const grid = document.getElementById('dailyGrid');
-            grid.innerHTML = "";
-            dailyRewards.forEach((item, index) => {
-                const dayNum = index + 1;
-                const div = document.createElement('div');
-                div.className = `daily-box ${dayNum === userData.dailyDay ? 'active' : ''} ${dayNum < userData.dailyDay ? 'claimed' : ''}`;
-                div.innerHTML = `<b>Day ${dayNum}</b><br>$${item.usd}<br>🎫${item.tickets}`;
-                grid.appendChild(div);
-            });
+// Adsterra Direct Link Updated
+let adsterraTimer = null;
+let adsterraSecondsLeft = 10;
+let isAdsterraActive = false;
+const adsterraDirectLink = "https://www.profitableratecpmnetwork.com/jbniegah7?key=c25a066401baecd24398a891da71814d";
+
+function watchAdsterraAd() {
+    window.open(adsterraDirectLink, '_blank');
+    isAdsterraActive = true;
+    adsterraSecondsLeft = 10;
+
+    document.getElementById('btnAdsterra').disabled = true;
+    document.getElementById('adsterraStatus').innerText = `Keep ad open: 10s remaining...`;
+
+    if (adsterraTimer) clearInterval(adsterraTimer);
+
+    adsterraTimer = setInterval(() => {
+        if (document.hidden) {
+            clearInterval(adsterraTimer);
+            isAdsterraActive = false;
+            document.getElementById('btnAdsterra').disabled = false;
+            document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: Page lost focus!";
+            return;
         }
 
-        function claimDailyReward() {
-            if (AdController) {
-                AdController.show().then(() => { processDailyClaim(); }).catch(() => { showToast("Watch full ad to claim!", "⚠️"); });
-            } else { processDailyClaim(); }
-        }
-
-        function processDailyClaim() {
-            const currentReward = dailyRewards[userData.dailyDay - 1];
-            userData.balance += currentReward.usd;
-            userData.tickets += currentReward.tickets;
-
-            userData.dailyDay = (userData.dailyDay >= 7) ? 1 : userData.dailyDay + 1;
+        adsterraSecondsLeft--;
+        if (adsterraSecondsLeft > 0) {
+            document.getElementById('adsterraStatus').innerText = `Keep ad open: ${adsterraSecondsLeft}s remaining...`;
+        } else {
+            clearInterval(adsterraTimer);
+            isAdsterraActive = false;
+            document.getElementById('btnAdsterra').disabled = false;
+            document.getElementById('adsterraStatus').innerText = "✅ Reward claimed!";
+            
+            userData.balance += 0.00025;
+            userData.tickets += 50;
+            userData.adsWatched = (userData.adsWatched || 0) + 1;
             saveCloudData();
-            showToast(`Daily Reward Claimed for Day ${userData.dailyDay - 1}!`, "📅");
+            showToast("Adsterra Reward: +$0.00025 & +50 Tickets!", "🌐");
+        }
+    }, 1000);
+}
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden && isAdsterraActive) {
+        clearInterval(adsterraTimer);
+        isAdsterraActive = false;
+        document.getElementById('btnAdsterra').disabled = false;
+        document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: You left early!";
+    }
+});
+
+// Daily Rewards
+function renderDailyGrid() {
+    const grid = document.getElementById('dailyGrid');
+    grid.innerHTML = "";
+    dailyRewards.forEach((item, index) => {
+        const dayNum = index + 1;
+        const div = document.createElement('div');
+        div.className = `daily-box ${dayNum === userData.dailyDay ? 'active' : ''} ${dayNum < userData.dailyDay ? 'claimed' : ''}`;
+        div.innerHTML = `<b>Day ${dayNum}</b><br>$${item.usd}<br>🎫${item.tickets}`;
+        grid.appendChild(div);
+    });
+}
+
+function claimDailyReward() {
+    if (AdController) {
+        AdController.show().then(() => { processDailyClaim(); }).catch(() => { showToast("Watch full ad to claim!", "⚠️"); });
+    } else { processDailyClaim(); }
+}
+
+function processDailyClaim() {
+    const currentReward = dailyRewards[userData.dailyDay - 1];
+    userData.balance += currentReward.usd;
+    userData.tickets += currentReward.tickets;
+
+    userData.dailyDay = (userData.dailyDay >= 7) ? 1 : userData.dailyDay + 1;
+    saveCloudData();
+    showToast(`Daily Reward Claimed for Day ${userData.dailyDay - 1}!`, "📅");
+}
+
+// Channel Task Engine
+let taskTimer = null;
+let taskSecondsLeft = 6;
+let isTaskActive = false;
+
+function startChannelTask() {
+    if (userData.taskCompleted) return;
+
+    window.open("https://t.me/Earn_money49", '_blank');
+    isTaskActive = true;
+    taskSecondsLeft = 6;
+    const btn = document.getElementById('btnTask1');
+    btn.disabled = true;
+    btn.innerText = `Wait ${taskSecondsLeft}s...`;
+
+    if (taskTimer) clearInterval(taskTimer);
+
+    taskTimer = setInterval(() => {
+        if (document.hidden) {
+            clearInterval(taskTimer);
+            isTaskActive = false;
+            btn.disabled = false;
+            btn.innerText = "Start Task";
+            showToast("Task cancelled: You left the app too early!", "❌");
+            return;
         }
 
-        // 4. Channel Task Engine (6s Timer Validation)
-        let taskTimer = null;
-        let taskSecondsLeft = 6;
-        let isTaskActive = false;
-
-        function startChannelTask() {
-            if (userData.taskCompleted) return;
-
-            window.open("https://t.me/Earn_money49", '_blank');
-            isTaskActive = true;
-            taskSecondsLeft = 6;
-            const btn = document.getElementById('btnTask1');
-            btn.disabled = true;
+        taskSecondsLeft--;
+        if (taskSecondsLeft > 0) {
             btn.innerText = `Wait ${taskSecondsLeft}s...`;
-
-            if (taskTimer) clearInterval(taskTimer);
-
-            taskTimer = setInterval(() => {
-                if (document.hidden) {
-                    clearInterval(taskTimer);
-                    isTaskActive = false;
-                    btn.disabled = false;
-                    btn.innerText = "Start Task";
-                    showToast("Task cancelled: You left the app too early!", "❌");
-                    return;
-                }
-
-                taskSecondsLeft--;
-                if (taskSecondsLeft > 0) {
-                    btn.innerText = `Wait ${taskSecondsLeft}s...`;
-                } else {
-                    clearInterval(taskTimer);
-                    isTaskActive = false;
-                    btn.disabled = false;
-                    btn.innerText = "Claim Rewards";
-                    btn.onclick = claimTaskReward;
-                    btn.style.background = "#2ecc71";
-                }
-            }, 1000);
+        } else {
+            clearInterval(taskTimer);
+            isTaskActive = false;
+            btn.disabled = false;
+            btn.innerText = "Claim Rewards";
+            btn.onclick = claimTaskReward;
+            btn.style.background = "#2ecc71";
         }
+    }, 1000);
+}
 
-        function claimTaskReward() {
-            userData.balance += 0.005;
-            userData.tickets += 1000;
-            userData.taskCompleted = true;
-            saveCloudData();
-            showToast("Task Reward Granted: +$0.005 & +1000 Tickets!", "🎁");
+function claimTaskReward() {
+    userData.balance += 0.005;
+    userData.tickets += 1000;
+    userData.taskCompleted = true;
+    saveCloudData();
+    showToast("Task Reward Granted: +$0.005 & +1000 Tickets!", "🎁");
+}
+
+function copyInviteLink() {
+    const link = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
+    navigator.clipboard.writeText(link);
+    showToast("Link successfully copied to clipboard!", "🔗");
+}
+
+function submitPromoCode() {
+    const val = document.getElementById('promoInput').value.trim();
+    if (val === "BONUS100") {
+        userData.tickets += 100;
+        saveCloudData();
+        showToast("Promo Code Applied: +100 Tickets!", "🏷️");
+    } else {
+        showToast("Invalid Promo Code!", "❌");
+    }
+    document.getElementById('promoInput').value = "";
+}
+
+// Professional Withdrawal System with Amount & TON Address Checks
+function processWithdrawal() {
+    const amountInput = document.getElementById('withdrawAmount').value;
+    const addressInput = document.getElementById('withdrawAddress').value.trim();
+
+    const amount = parseFloat(amountInput);
+
+    // Validation Checks
+    if (!amountInput || isNaN(amount) || amount < 0.05) {
+        showToast("Minimum withdrawal limit is $0.05!", "⚠️");
+        return;
+    }
+
+    if (amount > userData.balance) {
+        showToast("Insufficient balance for this withdrawal!", "⚠️");
+        return;
+    }
+
+    if (!addressInput) {
+        showToast("Please enter your TON wallet address!", "⚠️");
+        return;
+    }
+
+    // Check if address starts with EQ or UQ
+    if (!addressInput.startsWith("EQ") && !addressInput.startsWith("UQ")) {
+        showToast("Invalid TON Address! Must start with EQ or UQ.", "❌");
+        return;
+    }
+
+    // Deduct balance & Save transaction
+    userData.balance -= amount;
+    saveCloudData();
+
+    db.ref('withdrawals').push({
+        userId: userId,
+        name: userData.name,
+        amount: amount,
+        address: addressInput,
+        timestamp: new Date().toISOString()
+    });
+
+    document.getElementById('withdrawAmount').value = "";
+    document.getElementById('withdrawAddress').value = "";
+    
+    showToast(`Withdrawal of $${amount.toFixed(3)} submitted successfully!`, "🚀");
+}
+
+function setupContestTimer() {
+    let contestEndTime = localStorage.getItem('contest_end_time');
+    if (!contestEndTime) {
+        contestEndTime = Date.now() + (10 * 24 * 60 * 60 * 1000);
+        localStorage.setItem('contest_end_time', contestEndTime);
+    }
+
+    setInterval(() => {
+        const diff = contestEndTime - Date.now();
+        if (diff <= 0) {
+            document.getElementById('contestTimer').innerText = "Resetted!";
+            return;
         }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        // 5. Referral Link Copying
-        function copyInviteLink() {
-            const link = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
-            navigator.clipboard.writeText(link);
-            showToast("Link successfully copied to clipboard!", "🔗");
-        }
+        document.getElementById('contestTimer').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }, 1000);
+}
 
-        // 6. Promo Code Submission
-        function submitPromoCode() {
-            const val = document.getElementById('promoInput').value.trim();
-            if (val === "BONUS100") {
-                userData.tickets += 100;
-                saveCloudData();
-                showToast("Promo Code Applied: +100 Tickets!", "🏷️");
-            } else {
-                showToast("Invalid Promo Code!", "❌");
-            }
-            document.getElementById('promoInput').value = "";
-        }
+function renderLeaderboard(snapshot) {
+    const container = document.getElementById('leaderboardContainer');
+    container.innerHTML = "";
+    let list = [];
 
-        // 7. Withdrawal Processing
-        function processWithdrawal() {
-            const addr = document.getElementById('withdrawAddress').value.trim();
-            if (!addr) {
-                showToast("Please enter a valid USDT TON address!", "⚠️");
-                return;
-            }
-            if (userData.balance < 0.015) {
-                showToast("Minimum withdrawal limit is $0.015!", "⚠️");
-                return;
-            }
+    snapshot.forEach((child) => {
+        list.push({ id: child.key, ...child.val() });
+    });
 
-            userData.balance -= 0.015;
-            saveCloudData();
-            document.getElementById('withdrawAddress').value = "";
-            showToast("Withdrawal Request Submitted Successfully!", "🚀");
-        }
+    list.sort((a, b) => (b.tickets || 0) - (a.tickets || 0));
 
-        // 8. Contest Timer & Leaderboard
-        function setupContestTimer() {
-            let contestEndTime = localStorage.getItem('contest_end_time');
-            if (!contestEndTime) {
-                contestEndTime = Date.now() + (10 * 24 * 60 * 60 * 1000);
-                localStorage.setItem('contest_end_time', contestEndTime);
-            }
+    list.forEach((item, index) => {
+        const isCurrent = item.id === userId;
+        const prize = contestPrizes[index] || "$0.00";
+        const div = document.createElement('div');
+        div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
+        div.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="rank-num">#${index + 1}</span>
+                <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
+                <div>
+                    <div style="font-size: 12px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
+                    <div style="font-size: 10px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
+                </div>
+            </div>
+            <span class="prize-tag">${prize}</span>
+        `;
+        container.appendChild(div);
+    });
+}
 
-            setInterval(() => {
-                const diff = contestEndTime - Date.now();
-                if (diff <= 0) {
-                    document.getElementById('contestTimer').innerText = "Resetted!";
-                    return;
-                }
-                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+function saveCloudData() {
+    db.ref('users/' + userId).update(userData);
+}
 
-                document.getElementById('contestTimer').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-            }, 1000);
-        }
+function switchTab(tabName, element) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + tabName).classList.add('active');
+    element.classList.add('active');
+}
 
-        function renderLeaderboard(snapshot) {
-            const container = document.getElementById('leaderboardContainer');
-            container.innerHTML = "";
-            let list = [];
-
-            snapshot.forEach((child) => {
-                list.push({ id: child.key, ...child.val() });
-            });
-
-            list.sort((a, b) => (b.tickets || 0) - (a.tickets || 0));
-
-            list.forEach((item, index) => {
-                const isCurrent = item.id === userId;
-                const prize = contestPrizes[index] || "$0.00";
-                const div = document.createElement('div');
-                div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
-                div.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span class="rank-num">#${index + 1}</span>
-                        <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
-                        <div>
-                            <div style="font-size: 12px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
-                            <div style="font-size: 10px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
-                        </div>
-                    </div>
-                    <span class="prize-tag">${prize}</span>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function saveCloudData() {
-            db.ref('users/' + userId).update(userData);
-        }
-
-        function switchTab(tabName, element) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
-            element.classList.add('active');
-        }
-
-        initData();
-    </script>
+initData();
+</script>
 </body>
 </html>
-     
+
