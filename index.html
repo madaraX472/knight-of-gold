@@ -31,7 +31,7 @@
             filter: contrast(105%) brightness(105%);
         }
 
-        /* تعديل طبقة التظليل لتصبح الخلفية واضحة وجلية */
+        /* Overlay */
         .overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
@@ -335,11 +335,14 @@
             balance: 0.0000,
             tickets: 0,
             dailyDay: 1,
+            lastDailyClaim: 0,
             adsWatched: 0,
             adsgramCount: 0,
             adsgramResetTime: 0,
             activeRefsCount: 0,
             pendingRefsCount: 0,
+            referredBy: null,
+            referralRewardGiven: false,
             taskCompleted: false
         };
 
@@ -372,6 +375,19 @@
                 if (snapshot.exists()) {
                     userData = { ...userData, ...snapshot.val() };
                 } else {
+                    // Check Referral on First Login
+                    const startParam = tg?.initDataUnsafe?.start_param;
+                    if (startParam && startParam !== userId) {
+                        userData.referredBy = startParam;
+                        
+                        // Increase Pending Referral Count for Inviter
+                        db.ref('users/' + startParam).transaction((inviter) => {
+                            if (inviter) {
+                                inviter.pendingRefsCount = (inviter.pendingRefsCount || 0) + 1;
+                            }
+                            return inviter;
+                        });
+                    }
                     db.ref('users/' + userId).set(userData);
                 }
                 checkAdsgramLimit();
@@ -379,6 +395,9 @@
             });
 
             setupContestTimer();
+
+            // Timer Loop for Daily Reward Button Countdown
+            setInterval(updateDailyUI, 1000);
 
             db.ref('users').orderByChild('tickets').limitToLast(50).on('value', (snapshot) => {
                 renderLeaderboard(snapshot);
@@ -402,6 +421,7 @@
             }
 
             renderDailyGrid();
+            updateDailyUI();
         }
 
         function showToast(message, icon = "🎉") {
@@ -412,8 +432,27 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
 
+        // Referral Verification Check (Triggered on Watching Ads)
+        function checkReferralReward() {
+            if (userData.referredBy && !userData.referralRewardGiven && (userData.adsWatched || 0) >= 3) {
+                userData.referralRewardGiven = true;
+                saveCloudData();
+
+                db.ref('users/' + userData.referredBy).transaction((inviter) => {
+                    if (inviter) {
+                        inviter.balance = (inviter.balance || 0) + 0.02; // $0.02 Reward
+                        inviter.activeRefsCount = (inviter.activeRefsCount || 0) + 1;
+                        if (inviter.pendingRefsCount && inviter.pendingRefsCount > 0) {
+                            inviter.pendingRefsCount -= 1;
+                        }
+                    }
+                    return inviter;
+                });
+            }
+        }
+
         // Adsgram Limit Handler (30 ads / 5 hours)
-        function checkAdsgramLimit() {
+                function checkAdsgramLimit() {
             const now = Date.now();
             const fiveHours = 5 * 60 * 60 * 1000;
 
@@ -452,278 +491,317 @@
                     userData.adsWatched = (userData.adsWatched || 0) + 1;
                     userData.adsgramCount = (userData.adsgramCount || 0) + 1;
                     
+                    checkReferralReward();
                     saveCloudData();
                     checkAdsgramLimit();
-                                showToast("Adsgram Reward: +$0.0015 & +100 Tickets!", "💰");
-        }).catch(() => {
-            showToast("You must watch the full ad to claim reward!", "⚠️");
+                    showToast("Adsgram Reward: +$0.0015 & +100 Tickets!", "💰");
+                }).catch(() => {
+                    showToast("You must watch the full ad to claim reward!", "⚠️");
+                });
+            } else {
+                showToast("Ad SDK loading, please try again.", "⚠️");
+            }
+        }
+
+        // Adsterra Direct Link
+        let adsterraTimer = null;
+        let adsterraSecondsLeft = 10;
+        let isAdsterraActive = false;
+        const adsterraDirectLink = "https://www.profitableratecpmnetwork.com/jbniegah7?key=c25a066401baecd24398a891da71814d";
+
+        function watchAdsterraAd() {
+            window.open(adsterraDirectLink, '_blank');
+            isAdsterraActive = true;
+            adsterraSecondsLeft = 10;
+
+            document.getElementById('btnAdsterra').disabled = true;
+            document.getElementById('adsterraStatus').innerText = `Keep ad open: 10s remaining...`;
+
+            if (adsterraTimer) clearInterval(adsterraTimer);
+
+            adsterraTimer = setInterval(() => {
+                if (document.hidden) {
+                    clearInterval(adsterraTimer);
+                    isAdsterraActive = false;
+                    document.getElementById('btnAdsterra').disabled = false;
+                    document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: Page lost focus!";
+                    return;
+                }
+
+                adsterraSecondsLeft--;
+                if (adsterraSecondsLeft > 0) {
+                    document.getElementById('adsterraStatus').innerText = `Keep ad open: ${adsterraSecondsLeft}s remaining...`;
+                } else {
+                    clearInterval(adsterraTimer);
+                    isAdsterraActive = false;
+                    document.getElementById('btnAdsterra').disabled = false;
+                    document.getElementById('adsterraStatus').innerText = "✅ Reward claimed!";
+                    
+                    userData.balance += 0.00025;
+                    userData.tickets += 50;
+                    userData.adsWatched = (userData.adsWatched || 0) + 1;
+                    
+                    checkReferralReward();
+                    saveCloudData();
+                    showToast("Adsterra Reward: +$0.00025 & +50 Tickets!", "🌐");
+                }
+            }, 1000);
+        }
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden && isAdsterraActive) {
+                clearInterval(adsterraTimer);
+                isAdsterraActive = false;
+                document.getElementById('btnAdsterra').disabled = false;
+                document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: You left early!";
+            }
         });
-    } else {
-        showToast("Ad SDK loading, please try again.", "⚠️");
-    }
-}
 
-// Adsterra Direct Link
-let adsterraTimer = null;
-let adsterraSecondsLeft = 10;
-let isAdsterraActive = false;
-const adsterraDirectLink = "https://www.profitableratecpmnetwork.com/jbniegah7?key=c25a066401baecd24398a891da71814d";
-
-function watchAdsterraAd() {
-    window.open(adsterraDirectLink, '_blank');
-    isAdsterraActive = true;
-    adsterraSecondsLeft = 10;
-
-    document.getElementById('btnAdsterra').disabled = true;
-    document.getElementById('adsterraStatus').innerText = `Keep ad open: 10s remaining...`;
-
-    if (adsterraTimer) clearInterval(adsterraTimer);
-
-    adsterraTimer = setInterval(() => {
-        if (document.hidden) {
-            clearInterval(adsterraTimer);
-            isAdsterraActive = false;
-            document.getElementById('btnAdsterra').disabled = false;
-            document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: Page lost focus!";
-            return;
+        // Daily Rewards Engine with 24h Lock
+        function renderDailyGrid() {
+            const grid = document.getElementById('dailyGrid');
+            grid.innerHTML = "";
+            dailyRewards.forEach((item, index) => {
+                const dayNum = index + 1;
+                const div = document.createElement('div');
+                div.className = `daily-box ${dayNum === userData.dailyDay ? 'active' : ''} ${dayNum < userData.dailyDay ? 'claimed' : ''}`;
+                div.innerHTML = `<b>Day ${dayNum}</b><br>$${item.usd}<br>🎫${item.tickets}`;
+                grid.appendChild(div);
+            });
         }
 
-        adsterraSecondsLeft--;
-        if (adsterraSecondsLeft > 0) {
-            document.getElementById('adsterraStatus').innerText = `Keep ad open: ${adsterraSecondsLeft}s remaining...`;
-        } else {
-            clearInterval(adsterraTimer);
-            isAdsterraActive = false;
-            document.getElementById('btnAdsterra').disabled = false;
-            document.getElementById('adsterraStatus').innerText = "✅ Reward claimed!";
+        function updateDailyUI() {
+            const btn = document.getElementById('btnDaily');
+            if (!btn) return;
+
+            const now = Date.now();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            const lastClaim = userData.lastDailyClaim || 0;
+
+            if (now - lastClaim < twentyFourHours) {
+                btn.disabled = true;
+                const diff = twentyFourHours - (now - lastClaim);
+                const h = Math.floor(diff / (1000 * 60 * 60));
+                const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const s = Math.floor((diff % (1000 * 60)) / 1000);
+                btn.innerText = `Next Claim in: ${h}h ${m}m ${s}s`;
+            } else {
+                btn.disabled = false;
+                btn.innerText = "Claim Daily Reward";
+            }
+        }
+
+        function claimDailyReward() {
+            const now = Date.now();
+            const twentyFourHours = 24 * 60 * 60 * 1000;
+            const lastClaim = userData.lastDailyClaim || 0;
+
+            if (now - lastClaim < twentyFourHours) {
+                showToast("You already claimed today's reward!", "⏳");
+                return;
+            }
+
+            if (AdController) {
+                AdController.show().then(() => { processDailyClaim(); }).catch(() => { showToast("Watch full ad to claim!", "⚠️"); });
+            } else { 
+                processDailyClaim(); 
+            }
+        }
+
+        function processDailyClaim() {
+            const currentReward = dailyRewards[userData.dailyDay - 1];
+            userData.balance += currentReward.usd;
+            userData.tickets += currentReward.tickets;
+
+            userData.lastDailyClaim = Date.now();
+            userData.dailyDay = (userData.dailyDay >= 7) ? 1 : userData.dailyDay + 1;
             
-            userData.balance += 0.00025;
-            userData.tickets += 50;
-            userData.adsWatched = (userData.adsWatched || 0) + 1;
             saveCloudData();
-            showToast("Adsterra Reward: +$0.00025 & +50 Tickets!", "🌐");
-        }
-    }, 1000);
-}
-
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden && isAdsterraActive) {
-        clearInterval(adsterraTimer);
-        isAdsterraActive = false;
-        document.getElementById('btnAdsterra').disabled = false;
-        document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: You left early!";
-    }
-});
-
-// Daily Rewards
-function renderDailyGrid() {
-    const grid = document.getElementById('dailyGrid');
-    grid.innerHTML = "";
-    dailyRewards.forEach((item, index) => {
-        const dayNum = index + 1;
-        const div = document.createElement('div');
-        div.className = `daily-box ${dayNum === userData.dailyDay ? 'active' : ''} ${dayNum < userData.dailyDay ? 'claimed' : ''}`;
-        div.innerHTML = `<b>Day ${dayNum}</b><br>$${item.usd}<br>🎫${item.tickets}`;
-        grid.appendChild(div);
-    });
-}
-
-function claimDailyReward() {
-    if (AdController) {
-        AdController.show().then(() => { processDailyClaim(); }).catch(() => { showToast("Watch full ad to claim!", "⚠️"); });
-    } else { processDailyClaim(); }
-}
-
-function processDailyClaim() {
-    const currentReward = dailyRewards[userData.dailyDay - 1];
-    userData.balance += currentReward.usd;
-    userData.tickets += currentReward.tickets;
-
-    userData.dailyDay = (userData.dailyDay >= 7) ? 1 : userData.dailyDay + 1;
-    saveCloudData();
-    showToast(`Daily Reward Claimed for Day ${userData.dailyDay - 1}!`, "📅");
-}
-
-// Channel Task Engine
-let taskTimer = null;
-let taskSecondsLeft = 6;
-let isTaskActive = false;
-
-function startChannelTask() {
-    if (userData.taskCompleted) return;
-
-    window.open("https://t.me/Earn_money49", '_blank');
-    isTaskActive = true;
-    taskSecondsLeft = 6;
-    const btn = document.getElementById('btnTask1');
-    btn.disabled = true;
-    btn.innerText = `Wait ${taskSecondsLeft}s...`;
-
-    if (taskTimer) clearInterval(taskTimer);
-
-    taskTimer = setInterval(() => {
-        if (document.hidden) {
-            clearInterval(taskTimer);
-            isTaskActive = false;
-            btn.disabled = false;
-            btn.innerText = "Start Task";
-            showToast("Task cancelled: You left the app too early!", "❌");
-            return;
+            renderDailyGrid();
+            updateDailyUI();
+            showToast(`Daily Reward Claimed for Day ${userData.dailyDay - 1}!`, "📅");
         }
 
-        taskSecondsLeft--;
-        if (taskSecondsLeft > 0) {
+        // Channel Task Engine
+        let taskTimer = null;
+        let taskSecondsLeft = 6;
+        let isTaskActive = false;
+
+        function startChannelTask() {
+            if (userData.taskCompleted) return;
+
+            window.open("https://t.me/Earn_money49", '_blank');
+            isTaskActive = true;
+            taskSecondsLeft = 6;
+            const btn = document.getElementById('btnTask1');
+            btn.disabled = true;
             btn.innerText = `Wait ${taskSecondsLeft}s...`;
-        } else {
-            clearInterval(taskTimer);
-            isTaskActive = false;
-            btn.disabled = false;
-            btn.innerText = "Claim Rewards";
-            btn.onclick = claimTaskReward;
-            btn.style.background = "#2ecc71";
+
+            if (taskTimer) clearInterval(taskTimer);
+
+            taskTimer = setInterval(() => {
+                if (document.hidden) {
+                    clearInterval(taskTimer);
+                    isTaskActive = false;
+                    btn.disabled = false;
+                    btn.innerText = "Start Task";
+                    showToast("Task cancelled: You left the app too early!", "❌");
+                    return;
+                }
+
+                taskSecondsLeft--;
+                if (taskSecondsLeft > 0) {
+                    btn.innerText = `Wait ${taskSecondsLeft}s...`;
+                } else {
+                    clearInterval(taskTimer);
+                    isTaskActive = false;
+                    btn.disabled = false;
+                    btn.innerText = "Claim Rewards";
+                    btn.onclick = claimTaskReward;
+                    btn.style.background = "#2ecc71";
+                }
+            }, 1000);
         }
-    }, 1000);
-}
 
-function claimTaskReward() {
-    userData.balance += 0.005;
-    userData.tickets += 1000;
-    userData.taskCompleted = true;
-    saveCloudData();
-    showToast("Task Reward Granted: +$0.005 & +1000 Tickets!", "🎁");
-}
-
-function copyInviteLink() {
-    const link = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
-    navigator.clipboard.writeText(link);
-    showToast("Link successfully copied to clipboard!", "🔗");
-}
-
-function submitPromoCode() {
-    const val = document.getElementById('promoInput').value.trim();
-    if (val === "BONUS100") {
-        userData.tickets += 100;
-        saveCloudData();
-        showToast("Promo Code Applied: +100 Tickets!", "🏷️");
-    } else {
-        showToast("Invalid Promo Code!", "❌");
-    }
-    document.getElementById('promoInput').value = "";
-}
-
-// Professional Withdrawal System with Amount & TON Address Checks
-function processWithdrawal() {
-    const amountInput = document.getElementById('withdrawAmount').value;
-    const addressInput = document.getElementById('withdrawAddress').value.trim();
-
-    const amount = parseFloat(amountInput);
-
-    // Validation Checks
-    if (!amountInput || isNaN(amount) || amount < 0.05) {
-        showToast("Minimum withdrawal limit is $0.05!", "⚠️");
-        return;
-    }
-
-    if (amount > userData.balance) {
-        showToast("Insufficient balance for this withdrawal!", "⚠️");
-        return;
-    }
-
-    if (!addressInput) {
-        showToast("Please enter your TON wallet address!", "⚠️");
-        return;
-    }
-
-    // Check if address starts with EQ or UQ
-    if (!addressInput.startsWith("EQ") && !addressInput.startsWith("UQ")) {
-        showToast("Invalid TON Address! Must start with EQ or UQ.", "❌");
-        return;
-    }
-
-    // Deduct balance & Save transaction
-    userData.balance -= amount;
-    saveCloudData();
-
-    db.ref('withdrawals').push({
-        userId: userId,
-        name: userData.name,
-        amount: amount,
-        address: addressInput,
-        timestamp: new Date().toISOString()
-    });
-
-    document.getElementById('withdrawAmount').value = "";
-    document.getElementById('withdrawAddress').value = "";
-    
-    showToast(`Withdrawal of $${amount.toFixed(3)} submitted successfully!`, "🚀");
-}
-
-function setupContestTimer() {
-    let contestEndTime = localStorage.getItem('contest_end_time');
-    if (!contestEndTime) {
-        contestEndTime = Date.now() + (10 * 24 * 60 * 60 * 1000);
-        localStorage.setItem('contest_end_time', contestEndTime);
-    }
-
-    setInterval(() => {
-        const diff = contestEndTime - Date.now();
-        if (diff <= 0) {
-            document.getElementById('contestTimer').innerText = "Resetted!";
-            return;
+        function claimTaskReward() {
+            userData.balance += 0.005;
+            userData.tickets += 1000;
+            userData.taskCompleted = true;
+            saveCloudData();
+            showToast("Task Reward Granted: +$0.005 & +1000 Tickets!", "🎁");
         }
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-        document.getElementById('contestTimer').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-    }, 1000);
-}
+        function copyInviteLink() {
+            const link = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
+            navigator.clipboard.writeText(link);
+            showToast("Link successfully copied to clipboard!", "🔗");
+        }
 
-function renderLeaderboard(snapshot) {
-    const container = document.getElementById('leaderboardContainer');
-    container.innerHTML = "";
-    let list = [];
+        function submitPromoCode() {
+            const val = document.getElementById('promoInput').value.trim();
+            if (val === "BONUS100") {
+                userData.tickets += 100;
+                saveCloudData();
+                showToast("Promo Code Applied: +100 Tickets!", "🏷️");
+            } else {
+                showToast("Invalid Promo Code!", "❌");
+            }
+            document.getElementById('promoInput').value = "";
+        }
 
-    snapshot.forEach((child) => {
-        list.push({ id: child.key, ...child.val() });
-    });
+        // Professional Withdrawal System with Amount & TON Address Checks
+        function processWithdrawal() {
+            const amountInput = document.getElementById('withdrawAmount').value;
+            const addressInput = document.getElementById('withdrawAddress').value.trim();
 
-    list.sort((a, b) => (b.tickets || 0) - (a.tickets || 0));
+            const amount = parseFloat(amountInput);
 
-    list.forEach((item, index) => {
-        const isCurrent = item.id === userId;
-        const prize = contestPrizes[index] || "$0.00";
-        const div = document.createElement('div');
-        div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
-        div.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <span class="rank-num">#${index + 1}</span>
-                <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
-                <div>
-                    <div style="font-size: 12px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
-                    <div style="font-size: 10px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
-                </div>
-            </div>
-            <span class="prize-tag">${prize}</span>
-        `;
-        container.appendChild(div);
-    });
-}
+            // Validation Checks
+            if (!amountInput || isNaN(amount) || amount < 0.05) {
+                showToast("Minimum withdrawal limit is $0.05!", "⚠️");
+                return;
+            }
 
-function saveCloudData() {
-    db.ref('users/' + userId).update(userData);
-}
+            if (amount > userData.balance) {
+                showToast("Insufficient balance for this withdrawal!", "⚠️");
+                return;
+            }
 
-function switchTab(tabName, element) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-    document.getElementById('tab-' + tabName).classList.add('active');
-    element.classList.add('active');
-}
+            if (!addressInput) {
+                showToast("Please enter your TON wallet address!", "⚠️");
+                return;
+            }
 
-initData();
-</script>
+            // Check if address starts with EQ or UQ
+            if (!addressInput.startsWith("EQ") && !addressInput.startsWith("UQ")) {
+                showToast("Invalid TON Address! Must start with EQ or UQ.", "❌");
+                return;
+            }
+
+            // Deduct balance & Save transaction
+            userData.balance -= amount;
+            saveCloudData();
+
+            db.ref('withdrawals').push({
+                userId: userId,
+                name: userData.name,
+                amount: amount,
+                address: addressInput,
+                timestamp: new Date().toISOString()
+            });
+
+            document.getElementById('withdrawAmount').value = "";
+            document.getElementById('withdrawAddress').value = "";
+            
+            showToast(`Withdrawal of $${amount.toFixed(3)} submitted successfully!`, "🚀");
+        }
+
+        function setupContestTimer() {
+            let contestEndTime = localStorage.getItem('contest_end_time');
+            if (!contestEndTime) {
+                contestEndTime = Date.now() + (10 * 24 * 60 * 60 * 1000);
+                localStorage.setItem('contest_end_time', contestEndTime);
+            }
+
+            setInterval(() => {
+                const diff = contestEndTime - Date.now();
+                if (diff <= 0) {
+                    document.getElementById('contestTimer').innerText = "Resetted!";
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('contestTimer').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
+        }
+
+        function renderLeaderboard(snapshot) {
+            const container = document.getElementById('leaderboardContainer');
+            container.innerHTML = "";
+            let list = [];
+
+            snapshot.forEach((child) => {
+                list.push({ id: child.key, ...child.val() });
+            });
+
+            list.sort((a, b) => (b.tickets || 0) - (a.tickets || 0));
+
+            list.forEach((item, index) => {
+                const isCurrent = item.id === userId;
+                const prize = contestPrizes[index] || "$0.00";
+                const div = document.createElement('div');
+                div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span class="rank-num">#${index + 1}</span>
+                        <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
+                        <div>
+                            <div style="font-size: 12px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
+                            <div style="font-size: 10px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
+                        </div>
+                    </div>
+                    <span class="prize-tag">${prize}</span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function saveCloudData() {
+            db.ref('users/' + userId).update(userData);
+        }
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
+            element.classList.add('active');
+        }
+
+        initData();
+    </script>
 </body>
 </html>
 
