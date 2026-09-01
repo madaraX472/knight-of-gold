@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Knight of Gold - Earn & Contest</title>
+    <title>Earn Money - Knight of Gold</title>
     <!-- Telegram SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Adsgram SDK Official -->
@@ -25,7 +25,7 @@
         .overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 14, 20, 0.88);
+            background: rgba(11, 14, 20, 0.85);
             z-index: -1;
         }
 
@@ -39,12 +39,12 @@
             position: sticky; top: 0; z-index: 10;
         }
 
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .user-avatar { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #ffc107; object-fit: cover; }
+        .user-info { display: flex; align-items: center; gap: 8px; }
+        .user-avatar { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid #ffc107; object-fit: cover; }
         .stats-badge {
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid #ffc107;
-            border-radius: 14px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            border-radius: 12px;
             padding: 4px 10px;
             font-size: 12px;
             font-weight: bold;
@@ -56,56 +56,71 @@
         .tab-content.active { display: block; }
 
         .card {
-            background: rgba(18, 24, 38, 0.9);
+            background: rgba(18, 24, 38, 0.85);
             border: 1px solid rgba(255, 193, 7, 0.25);
             border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(8px);
         }
 
-        .card-title { font-size: 15px; font-weight: bold; margin-bottom: 10px; color: #ffc107; display: flex; align-items: center; gap: 6px; }
+        .card-title { font-size: 14px; font-weight: bold; margin-bottom: 8px; color: #ffc107; display: flex; align-items: center; gap: 6px; }
 
-        .progress-container { background: rgba(0, 0, 0, 0.6); border-radius: 10px; height: 10px; width: 100%; overflow: hidden; margin: 10px 0; border: 1px solid rgba(255, 193, 7, 0.2); }
-        .progress-bar { background: linear-gradient(90deg, #ff9800, #ffc107); height: 100%; width: 0%; transition: width 0.3s ease; }
+        .top-buttons { display: flex; gap: 10px; margin-bottom: 14px; }
+        .btn-top {
+            flex: 1; padding: 10px; border-radius: 10px; border: 1px solid rgba(255, 193, 7, 0.4);
+            background: rgba(255, 152, 0, 0.15); color: #ffc107; font-weight: bold; font-size: 13px;
+            cursor: pointer; text-align: center;
+        }
 
         .btn-action {
             width: 100%;
-            padding: 13px;
-            border-radius: 12px;
+            padding: 12px;
+            border-radius: 10px;
             border: none;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            background: linear-gradient(135deg, #ff9800, #ed6c02);
             color: #fff;
             margin-top: 6px;
-            box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
             transition: all 0.2s ease;
         }
-        .btn-action:active { transform: scale(0.97); }
         .btn-action:disabled { background: #34495e; color: #7f8c8d; box-shadow: none; cursor: not-allowed; }
 
-        /* Daily Reward Grid */
-        .daily-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
-        .daily-box { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 8px 4px; text-align: center; font-size: 11px; }
-        .daily-box.active { border-color: #ffc107; background: rgba(255, 193, 7, 0.2); font-weight: bold; color: #ffc107; }
+        /* Daily Login Grid - Smaller Size */
+        .daily-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
+        .daily-box {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 5px 2px;
+            text-align: center;
+            font-size: 10px;
+        }
+        .daily-box.active { border-color: #ffc107; background: rgba(255, 193, 7, 0.25); font-weight: bold; color: #ffc107; }
         .daily-box.claimed { border-color: #2ecc71; opacity: 0.4; }
 
-        /* Global Leaderboard Realtime List */
+        /* Leaderboard Items */
         .leader-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 12px; background: rgba(0, 0, 0, 0.4);
+            padding: 10px 12px; background: rgba(0, 0, 0, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; margin-bottom: 8px;
         }
         .leader-item.user-highlight { background: rgba(255, 193, 7, 0.18); border: 1px solid #ffc107; }
-        .rank-num { font-weight: bold; font-size: 14px; width: 28px; color: #ffc107; }
+        .rank-num { font-weight: bold; font-size: 13px; width: 26px; color: #ffc107; }
 
-        /* Profile & Withdrawal Forms */
-        .input-group { margin-bottom: 12px; text-align: left; }
-        .input-group label { display: block; font-size: 12px; color: #bdc3c7; margin-bottom: 6px; }
-        .input-field { width: 100%; padding: 12px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 10px; color: #fff; outline: none; font-size: 14px; }
+        /* Modal / Dialog */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1a202c; border: 1px solid #ffc107; border-radius: 14px; width: 85%; padding: 20px; text-align: center;
+        }
+        .input-field { width: 100%; padding: 10px; background: #0b0e14; border: 1px solid #ffc107; border-radius: 8px; color: #fff; margin: 12px 0; outline: none; }
 
         .navbar {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -119,88 +134,89 @@
 <body>
     <div class="overlay"></div>
 
-    <!-- Top Header -->
+    <!-- Header -->
     <div class="header">
         <div class="user-info">
             <img id="uAvatar" class="user-avatar" src="https://telegram.org/img/t_logo.png">
-            <span id="uName" style="font-weight: bold;">Loading...</span>
+            <span id="uName" style="font-weight: bold; font-size: 13px;">Loading...</span>
         </div>
         <div>
-            <span class="stats-badge" id="uBalance">$0.0000</span>
+            <span class="stats-badge" id="uBalance">$ 0.0000</span>
             <span class="stats-badge" id="uTickets">🎫 0</span>
         </div>
     </div>
 
     <!-- 1. EARN TAB -->
     <div id="tab-earn" class="tab-content active">
-        <!-- Main Ads (Adsgram) -->
-        <div class="card">
-            <div class="card-title">📺 Main Ads (Adsgram)</div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #bdc3c7;">
-                <span>Progress: <b id="adsgramCount">0</b>/100</span>
-                <span id="adsgramTimer"></span>
-            </div>
-            <div class="progress-container">
-                <div id="adsgramBar" class="progress-bar"></div>
-            </div>
-            <button id="btnAdsgram" class="btn-action" onclick="watchAdsgramAd()">Watch Ad (+1 Ticket)</button>
+        <!-- Top Buttons (Promo & Invite) -->
+        <div class="top-buttons">
+            <div class="btn-top" onclick="openPromoModal()">🏷️ Promo Code</div>
+            <div class="btn-top" onclick="copyInviteLink()">🔗 Invite Link</div>
         </div>
 
-        <!-- Bonus Ads -->
+        <!-- Adsgram Ad -->
         <div class="card">
-            <div class="card-title">🎬 Bonus Ads</div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #bdc3c7;">
-                <span>Progress: <b id="secCount">0</b>/20</span>
-                <span id="secTimer"></span>
-            </div>
-            <div class="progress-container">
-                <div id="secBar" class="progress-bar" style="background: linear-gradient(90deg, #3498db, #2980b9);"></div>
-            </div>
-            <button id="btnSecAd" class="btn-action" style="background: linear-gradient(135deg, #3498db, #2980b9);" onclick="watchSecondaryAd()">Watch Bonus Ad (+1 Ticket)</button>
+            <div class="card-title">📺 Watch Adsgram Ad</div>
+            <p style="font-size: 11px; color: #bdc3c7; margin-bottom: 8px;">Reward: <b>+$0.0005 + 100 Tickets</b> (Must watch complete ad)</p>
+            <button id="btnAdsgram" class="btn-action" onclick="watchAdsgramAd()">Watch Adsgram Ad</button>
         </div>
 
-        <!-- Daily Reward -->
+        <!-- Adsterra Ad with 10s Timer Validation -->
         <div class="card">
-            <div class="card-title">📅 Daily Reward (Watch Ad to Claim)</div>
+            <div class="card-title">🌐 Watch Adsterra Ad</div>
+            <p style="font-size: 11px; color: #bdc3c7; margin-bottom: 8px;">Reward: <b>+$0.00025 + 50 Tickets</b> (Stay 10s on link page)</p>
+            <button id="btnAdsterra" class="btn-action" style="background: linear-gradient(135deg, #2980b9, #3498db);" onclick="watchAdsterraAd()">Watch Adsterra Ad</button>
+            <div id="adsterraStatus" style="font-size: 11px; color: #ffc107; margin-top: 6px; text-align: center;"></div>
+        </div>
+
+        <!-- Daily Login (Small Buttons & Reset to Day 1) -->
+        <div class="card">
+            <div class="card-title">📅 Daily Login Reward</div>
             <div class="daily-grid" id="dailyGrid"></div>
-            <button id="btnDaily" class="btn-action" style="margin-top: 12px; background: linear-gradient(135deg, #ff9800, #ed6c02);" onclick="claimDailyReward()">Claim Today's Reward</button>
-            <div id="dailyTimer" style="text-align: center; font-size: 12px; color: #bdc3c7; margin-top: 6px;"></div>
+            <button id="btnDaily" class="btn-action" style="margin-top: 10px;" onclick="claimDailyReward()">Claim Daily Reward (Watch Ad)</button>
         </div>
     </div>
 
     <!-- 2. CONTEST TAB -->
     <div id="tab-contest" class="tab-content">
+        <div class="card" style="text-align: center; border-color: #ffc107;">
+            <div style="font-size: 12px; color: #bdc3c7;">⏳ Weekly Contest Resets In:</div>
+            <div id="contestTimer" style="font-size: 18px; font-weight: bold; color: #ffc107; margin: 4px 0;">10d 00h 00m 00s</div>
+        </div>
+
         <div class="card">
-            <div class="card-title">🏆 Global Live Leaderboard</div>
-            <div style="font-size: 12px; color: #bdc3c7; margin-bottom: 12px;">End of Season Reward: Top 10 users get automatic wallet payout!</div>
-            <div id="leaderboardContainer">Loading real users leaderboard...</div>
+            <div class="card-title">🏆 Contest Leaderboard</div>
+            <div id="leaderboardContainer">Loading leaderboard...</div>
         </div>
     </div>
 
-    <!-- 3. PROFILE & WITHDRAWAL TAB -->
+    <!-- 3. PROFILE TAB -->
     <div id="tab-profile" class="tab-content">
         <div class="card">
-            <div class="card-title">👤 Account & Referrals</div>
-            <p style="font-size: 13px; color: #bdc3c7; margin-bottom: 10px;">Earn <b>$0.01 + 100 Tickets</b> per active referral (Invitee must watch at least 3 ads).</p>
-            <button class="btn-action" onclick="copyInviteLink()" style="background: linear-gradient(135deg, #8e44ad, #9b59b6);">📋 Copy Referral Link</button>
-        </div>
-
-        <div class="card">
-            <div class="card-title">💸 USDT Withdrawal</div>
-            <div class="input-group">
-                <label>Receiver Wallet Address (USDT - TON)</label>
-                <input type="text" id="withdrawAddress" class="input-field" placeholder="Paste TON Address...">
+            <div class="card-title">👤 Player Statistics</div>
+            <div style="font-size: 13px; line-height: 1.8;">
+                <div>User Name: <b id="profName">Madara ~</b></div>
+                <div>Total USDT Earned: <b id="profBalance">$0.0000</b></div>
+                <div>Total Tickets: 🎫 <b id="profTickets">0</b></div>
             </div>
-            <div class="input-group">
-                <label>Amount (Min: $0.0150)</label>
-                <input type="number" id="withdrawAmount" class="input-field" placeholder="0.0150" step="0.001">
-            </div>
-            <button class="btn-action" onclick="requestWithdrawal()">Submit Withdrawal Request</button>
-            <div id="withdrawalHistory" style="margin-top: 15px;"></div>
+            <button class="btn-action" style="margin-top: 12px;" onclick="copyInviteLink()">Copy My Invite Link</button>
         </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Promo Modal -->
+    <div id="promoModal" class="modal">
+        <div class="modal-content">
+            <h3>Earn Money</h3>
+            <p style="font-size: 12px; color: #bdc3c7; margin-top: 6px;">Enter Promo Code:</p>
+            <input type="text" id="promoInput" class="input-field" placeholder="Code...">
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="closePromoModal()" style="padding: 8px 16px; background: #7f8c8d; border: none; border-radius: 6px; color: #fff;">إلغاء</button>
+                <button onclick="submitPromoCode()" style="padding: 8px 16px; background: #2ecc71; border: none; border-radius: 6px; color: #fff;">حسناً</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
     <div class="navbar">
         <div class="nav-item active" onclick="switchTab('earn', this)">Earn</div>
         <div class="nav-item" onclick="switchTab('contest', this)">Contest</div>
@@ -208,182 +224,146 @@
     </div>
 
     <script>
-        // 1. Firebase Initialization (Realtime Database)
+        // Firebase Config
         const firebaseConfig = { databaseURL: "https://earn-money-336fd-default-rtdb.firebaseio.com" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // 2. Official Adsgram Controller Integration
+        // Adsgram SDK
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "45406" }) : null;
 
-        // 3. Telegram App User Integration
+        // Telegram WebApp
         const tg = window.Telegram?.WebApp;
         tg?.expand();
 
         const user = tg?.initDataUnsafe?.user || { id: "dev_user_1", first_name: "Madara ~", photo_url: "" };
         const userId = user.id.toString();
 
-        // Single Device Security Lock
-        let deviceID = localStorage.getItem('app_device_id');
-        if (!deviceID) {
-            deviceID = 'DEV_' + Math.random().toString(36).substring(2, 15);
-            localStorage.setItem('app_device_id', deviceID);
-        }
-
+        // Default Reset Settings (Start Day 1 & 0 Tickets)
         let userData = {
             name: user.first_name || "User",
-            photo: user.photo_url || "https://telegram.org/img/t_logo.png",
+            photo: user.photo_url || "",
             balance: 0.0000,
             tickets: 0,
-            deviceId: deviceID,
-            adsgramCount: 0,
-            adsgramCooldown: 0,
-            secCount: 0,
-            secCooldown: 0,
             dailyDay: 1,
-            lastDailyTimestamp: 0,
-            totalAdsWatched: 0,
-            referredBy: ""
+            lastDailyTimestamp: 0
         };
 
         const dailyRewards = [
-            { usd: 0.002, tickets: 100 },
-            { usd: 0.003, tickets: 200 },
-            { usd: 0.005, tickets: 300 },
-            { usd: 0.005, tickets: 450 },
-            { usd: 0.010, tickets: 500 },
-            { usd: 0.020, tickets: 800 },
-            { usd: 0.035, tickets: 1000 }
+            { usd: 0.0005, tickets: 100 },
+            { usd: 0.0008, tickets: 150 },
+            { usd: 0.0010, tickets: 200 },
+            { usd: 0.0012, tickets: 250 },
+            { usd: 0.0015, tickets: 300 },
+            { usd: 0.0020, tickets: 400 },
+            { usd: 0.0030, tickets: 500 }
         ];
 
         function initData() {
             document.getElementById('uName').innerText = userData.name;
-            if (user.photo_url) {
-                document.getElementById('uAvatar').src = user.photo_url;
-            }
+            document.getElementById('profName').innerText = userData.name;
+            if (user.photo_url) document.getElementById('uAvatar').src = user.photo_url;
 
             db.ref('users/' + userId).on('value', (snapshot) => {
                 if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    if (data.deviceId && data.deviceId !== deviceID) {
-                        alert("Multi-account access denied on this device!");
-                        document.body.innerHTML = "<h2 style='text-align:center;margin-top:50px;'>Device Access Blocked</h2>";
-                        return;
-                    }
-                    userData = { ...userData, ...data };
+                    userData = { ...userData, ...snapshot.val() };
                 } else {
                     db.ref('users/' + userId).set(userData);
                 }
                 updateUI();
             });
 
-            // Global Realtime Leaderboard (Only Real Active Users)
+            // 10-Day Weekly Contest Timer Setup
+            setupContestTimer();
+
+            // Realtime Leaderboard
             db.ref('users').orderByChild('tickets').limitToLast(50).on('value', (snapshot) => {
-                renderGlobalLeaderboard(snapshot);
+                renderLeaderboard(snapshot);
             });
         }
 
         function updateUI() {
-            document.getElementById('uBalance').innerText = `$${userData.balance.toFixed(4)}`;
+            document.getElementById('uBalance').innerText = `$ ${userData.balance.toFixed(4)}`;
             document.getElementById('uTickets').innerText = `🎫 ${userData.tickets}`;
-
-            const now = Date.now();
-            if (userData.adsgramCooldown && now < userData.adsgramCooldown) {
-                document.getElementById('btnAdsgram').disabled = true;
-                startTimer(userData.adsgramCooldown, 'adsgramTimer', () => { userData.adsgramCount = 0; updateUI(); });
-            } else {
-                document.getElementById('btnAdsgram').disabled = false;
-                document.getElementById('adsgramTimer').innerText = "";
-            }
-            document.getElementById('adsgramCount').innerText = userData.adsgramCount;
-            document.getElementById('adsgramBar').style.width = `${(userData.adsgramCount / 100) * 100}%`;
-
-            if (userData.secCooldown && now < userData.secCooldown) {
-                document.getElementById('btnSecAd').disabled = true;
-                startTimer(userData.secCooldown, 'secTimer', () => { userData.secCount = 0; updateUI(); });
-            } else {
-                document.getElementById('btnSecAd').disabled = false;
-                document.getElementById('secTimer').innerText = "";
-            }
-            document.getElementById('secCount').innerText = userData.secCount;
-            document.getElementById('secBar').style.width = `${(userData.secCount / 20) * 100}%`;
+            document.getElementById('profBalance').innerText = `$${userData.balance.toFixed(4)}`;
+            document.getElementById('profTickets').innerText = userData.tickets;
 
             renderDailyGrid();
         }
 
-        // Real Adsgram Ad Trigger (No Fake Simulations)
+        // 1. Adsgram Ad (Must watch full ad: Reward = $0.0005 + 100 Tickets)
         function watchAdsgramAd() {
-            if (userData.adsgramCount >= 100) return alert("Daily limit reached (100 Ads). Please wait 5 hours.");
-
             if (AdController) {
                 AdController.show().then(() => {
-                    grantAdReward('adsgram');
-                }).catch((err) => {
-                    alert("Ad was not completed or failed to load.");
-                });
-            } else {
-                alert("Adsgram SDK is loading. Please try again in a few seconds.");
-            }
-        }
-
-        function watchSecondaryAd() {
-            if (userData.secCount >= 20) return alert("Bonus limit reached (20 Ads). Please wait 5 hours.");
-
-            if (AdController) {
-                AdController.show().then(() => {
-                    grantAdReward('sec');
+                    userData.balance += 0.0005;
+                    userData.tickets += 100;
+                    saveCloudData();
+                    alert("Reward Granted: +$0.0005 & +100 Tickets!");
                 }).catch(() => {
-                    alert("Ad was not completed.");
+                    alert("You must watch the full ad to claim the reward!");
                 });
             } else {
-                alert("Adsgram SDK is loading. Please try again in a few seconds.");
+                alert("Adsgram SDK is loading. Try again.");
             }
         }
 
-        function grantAdReward(type) {
-            const btn = (type === 'adsgram') ? document.getElementById('btnAdsgram') : document.getElementById('btnSecAd');
+        // 2. Adsterra Ad (10 Seconds Stay Validation)
+        let adsterraTimer = null;
+        let adsterraSecondsLeft = 10;
+        let isAdsterraActive = false;
+        const adsterraDirectLink = "https://www.highperformancecpmgate.com/example_link"; // ضع رابط أدستيرا الخاص بك هنا
+
+        function watchAdsterraAd() {
+            window.open(adsterraDirectLink, '_blank');
+            isAdsterraActive = true;
+            adsterraSecondsLeft = 10;
+
+            document.getElementById('btnAdsterra').disabled = true;
+            document.getElementById('adsterraStatus').innerText = `Keep ad open: 10s remaining...`;
+
+            if (adsterraTimer) clearInterval(adsterraTimer);
             
-            if (type === 'adsgram') {
-                userData.adsgramCount += 1;
-                if (userData.adsgramCount >= 100) userData.adsgramCooldown = Date.now() + (5 * 60 * 60 * 1000);
-            } else {
-                userData.secCount += 1;
-                if (userData.secCount >= 20) userData.secCooldown = Date.now() + (5 * 60 * 60 * 1000);
-            }
+            adsterraTimer = setInterval(() => {
+                if (document.hidden) {
+                    // If user left/returned back before 10s
+                    clearInterval(adsterraTimer);
+                    isAdsterraActive = false;
+                    document.getElementById('btnAdsterra').disabled = false;
+                    document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: You left early!";
+                    return;
+                }
 
-            userData.tickets += 1;
-            userData.totalAdsWatched += 1;
-            checkReferralReward();
-            saveCloudData();
-
-            // 20-Second Mandatory Cooldown between ads
-            startBtnCooldown(btn, 20);
-        }
-
-        function startBtnCooldown(btn, seconds) {
-            btn.disabled = true;
-            let left = seconds;
-            const originalText = btn.innerText;
-            btn.innerText = `Wait (${left}s)...`;
-
-            const timer = setInterval(() => {
-                left--;
-                if (left <= 0) {
-                    clearInterval(timer);
-                    btn.disabled = false;
-                    btn.innerText = originalText;
+                adsterraSecondsLeft--;
+                if (adsterraSecondsLeft > 0) {
+                    document.getElementById('adsterraStatus').innerText = `Keep ad open: ${adsterraSecondsLeft}s remaining...`;
                 } else {
-                    btn.innerText = `Wait (${left}s)...`;
+                    clearInterval(adsterraTimer);
+                    isAdsterraActive = false;
+                    document.getElementById('btnAdsterra').disabled = false;
+                    document.getElementById('adsterraStatus').innerText = "✅ Reward claimed successfully!";
+                    
+                    userData.balance += 0.00025;
+                    userData.tickets += 50;
+                    saveCloudData();
+                    alert("Adsterra Reward Granted: +$0.00025 & +50 Tickets!");
                 }
             }, 1000);
         }
 
-        // Daily Login Grid Logic
+        // Detect tab blur/switch during Adsterra countdown
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden && isAdsterraActive) {
+                clearInterval(adsterraTimer);
+                isAdsterraActive = false;
+                document.getElementById('btnAdsterra').disabled = false;
+                document.getElementById('adsterraStatus').innerText = "❌ Reward cancelled: Page lost focus!";
+            }
+        });
+
+        // 3. Daily Login Grid (Small Buttons & Start Day 1)
         function renderDailyGrid() {
             const grid = document.getElementById('dailyGrid');
             grid.innerHTML = "";
-            const now = Date.now();
-            const canClaim = (now - userData.lastDailyTimestamp) >= (24 * 60 * 60 * 1000);
 
             dailyRewards.forEach((item, index) => {
                 const dayNum = index + 1;
@@ -392,21 +372,9 @@
                 div.innerHTML = `<b>Day ${dayNum}</b><br>$${item.usd}<br>🎫${item.tickets}`;
                 grid.appendChild(div);
             });
-
-            document.getElementById('btnDaily').disabled = !canClaim;
-            if (!canClaim) {
-                startTimer(userData.lastDailyTimestamp + (24 * 60 * 60 * 1000), 'dailyTimer');
-            } else {
-                document.getElementById('dailyTimer').innerText = "Available to Claim!";
-            }
         }
 
         function claimDailyReward() {
-            const now = Date.now();
-            if ((now - userData.lastDailyTimestamp) < (24 * 60 * 60 * 1000)) {
-                return alert("You can only claim daily rewards once every 24 hours!");
-            }
-
             if (AdController) {
                 AdController.show().then(() => {
                     processDailyClaim();
@@ -422,144 +390,42 @@
             const currentReward = dailyRewards[userData.dailyDay - 1];
             userData.balance += currentReward.usd;
             userData.tickets += currentReward.tickets;
-            userData.lastDailyTimestamp = Date.now();
 
-                        if (userData.dailyDay >= 7) {
+            if (userData.dailyDay >= 7) {
                 userData.dailyDay = 1;
             } else {
                 userData.dailyDay += 1;
             }
 
             saveCloudData();
-            alert(`Claimed Day ${userData.dailyDay - 1} Reward Successfully!`);
+            alert(`Claimed Day ${userData.dailyDay - 1} Daily Reward!`);
         }
 
-        // Referral Validation
-        function checkReferralReward() {
-            if (userData.referredBy && userData.totalAdsWatched === 3) {
-                db.ref('users/' + userData.referredBy).transaction((inviter) => {
-                    if (inviter) {
-                        inviter.balance = (inviter.balance || 0) + 0.01;
-                        inviter.tickets = (inviter.tickets || 0) + 100;
-                    }
-                    return inviter;
-                });
+        // 4. Contest 10-Day Countdown Timer (In Seconds)
+        function setupContestTimer() {
+            let contestEndTime = localStorage.getItem('contest_end_time');
+            if (!contestEndTime) {
+                contestEndTime = Date.now() + (10 * 24 * 60 * 60 * 1000); // 10 Days from now
+                localStorage.setItem('contest_end_time', contestEndTime);
             }
+
+            setInterval(() => {
+                const diff = contestEndTime - Date.now();
+                if (diff <= 0) {
+                    document.getElementById('contestTimer').innerText = "Resetted!";
+                    return;
+                }
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('contestTimer').innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+            }, 1000);
         }
-function copyInviteLink() {
-    const inviteLink = `https://t.me/Knight_Bot?start=${currentUser ? currentUser.telegramId : ''}`;
-    navigator.clipboard.writeText(inviteLink).then(() => {
-        alert("Referral link copied!");
-    }).catch(err => {
-        console.error("Failed to copy link: ", err);
-    });
-}
 
-// Render Real World Leaderboard (No Bot Users)
-function renderGlobalLeaderboard(snapshot) {
-    const container = document.getElementById("leaderboard-container") || document.getElementById("leaderboardList");
-    if (!container) return;
-
-    container.innerHTML = ""; // Clear existing list
-
-    if (!snapshot || snapshot.empty) {
-        container.innerHTML = `<div class="empty-msg">No leaderboard data found.</div>`;
-        return;
-    }
-
-    const leaderboardData = [];
-
-    // Extract documents and filter out bot users
-    snapshot.forEach((doc) => {
-        const userData = doc.data();
-        if (!userData.isBot && !userData.isFake) {
-            leaderboardData.push({
-                id: doc.id,
-                username: userData.username || userData.firstName || "Anonymous",
-                balance: userData.balance || 0,
-                tickets: userData.tickets || 0,
-                avatar: userData.photoUrl || "assets/default-avatar.png"
-            });
-        }
-    });
-
-    // Sort descending by balance / points
-    leaderboardData.sort((a, b) => b.balance - a.balance);
-
-    // Render top 100 users
-    leaderboardData.slice(0, 100).forEach((user, index) => {
-        const rank = index + 1;
-        const itemElement = document.createElement("div");
-        itemElement.className = `leaderboard-item ${rank <= 3 ? 'top-rank rank-' + rank : ''}`;
-        
-        itemElement.innerHTML = `
-            <div class="rank-number">${getRankBadge(rank)}</div>
-            <div class="user-profile">
-                <img src="${user.avatar}" alt="${user.username}" class="user-avatar" onerror="this.src='assets/default-avatar.png'" />
-                <div class="user-details">
-                    <span class="user-name">${escapeHtml(user.username)}</span>
-                    <span class="user-tickets">${user.tickets} Tickets</span>
-                </div>
-            </div>
-            <div class="user-score">
-                <span class="score-value">${formatNumber(user.balance)}</span>
-            </div>
-        `;
-
-        container.appendChild(itemElement);
-    });
-
-    // Update Current User Position
-    if (typeof currentUser !== 'undefined' && currentUser) {
-        updateMyLeaderboardRank(leaderboardData, currentUser.id || currentUser.telegramId);
-    }
-}
-
-// Helper: Format Rank Badge Icon or Number
-function getRankBadge(rank) {
-    if (rank === 1) return '🥇';
-    if (rank === 2) return '🥈';
-    if (rank === 3) return '🥉';
-    return `#${rank}`;
-}
-
-// Helper: Find & Render Current User Rank
-function updateMyLeaderboardRank(allUsers, currentUserId) {
-    const myRankContainer = document.getElementById("my-rank-container");
-    if (!myRankContainer) return;
-
-    const userIndex = allUsers.findIndex(user => user.id === currentUserId);
-    if (userIndex !== -1) {
-        const myRank = userIndex + 1;
-        const myData = allUsers[userIndex];
-
-        myRankContainer.innerHTML = `
-            <div class="my-rank-card">
-                <span>Your Rank: <strong>${getRankBadge(myRank)}</strong></span>
-                <span>Balance: <strong>${formatNumber(myData.balance)}</strong></span>
-            </div>
-        `;
-    } else {
-        myRankContainer.innerHTML = `
-            <div class="my-rank-card">
-                <span>Your Rank: <strong>Unranked</strong></span>
-            </div>
-        `;
-    }
-}
-
-// Helper: Format Big Numbers (e.g. 1,000,000)
-function formatNumber(num) {
-    return new Intl.NumberFormat('en-US').format(num || 0);
-}
-
-// Helper: Escape HTML to prevent XSS
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.innerText = text;
-    return div.in();
-});
-        function renderGlobalLeaderboard(snapshot) {
+        // 5. Leaderboard Rendering
+        function renderLeaderboard(snapshot) {
             const container = document.getElementById('leaderboardContainer');
             container.innerHTML = "";
             let list = [];
@@ -575,12 +441,12 @@ function escapeHtml(text) {
                 const div = document.createElement('div');
                 div.className = `leader-item ${isCurrent ? 'user-highlight' : ''}`;
                 div.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
                         <span class="rank-num">#${index + 1}</span>
                         <img src="${item.photo || 'https://telegram.org/img/t_logo.png'}" class="user-avatar">
                         <div>
-                            <div style="font-size: 13px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
-                            <div style="font-size: 11px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
+                            <div style="font-size: 12px; font-weight: bold;">${item.name} ${isCurrent ? '(You)' : ''}</div>
+                            <div style="font-size: 10px; color: #ffc107;">🎫 ${item.tickets || 0} Tickets</div>
                         </div>
                     </div>
                 `;
@@ -588,55 +454,30 @@ function escapeHtml(text) {
             });
         }
 
-        // Withdrawal System
-        function requestWithdrawal() {
-            const addr = document.getElementById('withdrawAddress').value.trim();
-            const amt = parseFloat(document.getElementById('withdrawAmount').value);
+        // Modals & Links
+                function openPromoModal() { document.getElementById('promoModal').style.display = 'flex'; }
+        function closePromoModal() { document.getElementById('promoModal').style.display = 'none'; }
 
-            if (!addr) return alert("Please enter a valid wallet address.");
-            if (isNaN(amt) || amt < 0.0150) return alert("Minimum withdrawal amount is $0.0150 USDT.");
-            if (amt > userData.balance) return alert("Insufficient balance!");
+        function submitPromoCode() {
+            const val = document.getElementById('promoInput').value.trim();
+            if (val === "BONUS100") {
+                userData.tickets += 100;
+                saveCloudData();
+                alert("Promo Code Applied: +100 Tickets!");
+            } else {
+                alert("Invalid Promo Code!");
+            }
+            closePromoModal();
+        }
 
-            userData.balance -= amt;
-            saveCloudData();
-
-            db.ref('withdrawals').push({
-                userId: userId,
-                name: userData.name,
-                address: addr,
-                amount: amt,
-                status: "Pending ⏳",
-                timestamp: Date.now()
-            });
-
-            document.getElementById('withdrawalHistory').innerHTML = `
-                <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; margin-top: 10px; border: 1px solid rgba(255,193,7,0.3);">
-                    <span style="background: #ffc107; color: #000; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">Pending ⏳</span>
-                    <p style="font-size: 12px; margin-top: 6px; color: #bdc3c7;">Withdrawal request for <b>$${amt} USDT</b> submitted to: ${addr}</p>
-                </div>
-            `;
-            alert("Withdrawal request submitted! Payout will be processed soon.");
+        function copyInviteLink() {
+            const link = `https://t.me/Knight_Gold_bot/app?startapp=${userId}`;
+            navigator.clipboard.writeText(link);
+            alert("Invite link copied!");
         }
 
         function saveCloudData() {
             db.ref('users/' + userId).update(userData);
-        }
-
-        function startTimer(targetTimestamp, elementId, onComplete) {
-            const el = document.getElementById(elementId);
-            const interval = setInterval(() => {
-                const diff = targetTimestamp - Date.now();
-                if (diff <= 0) {
-                    clearInterval(interval);
-                    el.innerText = "";
-                    if (onComplete) onComplete();
-                    return;
-                }
-                const hrs = Math.floor(diff / (1000 * 60 * 60));
-                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                const secs = Math.floor((diff % (1000 * 60)) / 1000);
-                el.innerText = `⏳ ${hrs}h ${mins}m ${secs}s`;
-            }, 1000);
         }
 
         function switchTab(tabName, element) {
@@ -650,3 +491,5 @@ function escapeHtml(text) {
     </script>
 </body>
 </html>
+
+                                    
