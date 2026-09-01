@@ -28,12 +28,14 @@
             color: #fff;
             padding-bottom: 85px;
             min-height: 100vh;
+            filter: contrast(105%) brightness(105%);
         }
 
+        /* تعديل طبقة التظليل لتصبح الخلفية واضحة وجلية */
         .overlay {
             position: fixed;
             top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(11, 14, 20, 0.88);
+            background: rgba(11, 14, 20, 0.50); 
             z-index: -1;
         }
 
@@ -452,16 +454,17 @@
                     
                     saveCloudData();
                     checkAdsgramLimit();
-                    showToast("Adsgram Reward: +$0.0015 & +100 Tickets!", "💰");
-                }).catch(() => {
-                                showToast("You must watch the full ad to claim reward!", "⚠️");
+                    showToast("Adsgram Reward: +$0.0015
+& +100 Tickets!", "💰");
+        }).catch(() => {
+            showToast("You must watch the full ad to claim reward!", "⚠️");
         });
     } else {
         showToast("Ad SDK loading, please try again.", "⚠️");
     }
 }
 
-// Adsterra Direct Link Updated
+// Adsterra Direct Link
 let adsterraTimer = null;
 let adsterraSecondsLeft = 10;
 let isAdsterraActive = false;
@@ -724,4 +727,3 @@ initData();
 </script>
 </body>
 </html>
-
